@@ -201,31 +201,99 @@
         font-size: clamp(4rem, 18vw, 12rem);
         position: relative;
         color: var(--fifty-color);
+        display: inline-block;
       }
 
       .fifty.cracked::before,
       .fifty.cracked::after {
         content: "";
         position: absolute;
-        width: 125%;
-        left: -12%;
-        height: 3px;
+        width: 122%;
+        left: -11%;
+        height: 5px;
+        top: 50%;
+        border-radius: 999px;
         background: linear-gradient(
           90deg,
           transparent,
-          var(--rose),
+          rgba(255, 66, 66, 0.95),
           transparent
         );
+        box-shadow: 0 0 18px rgba(255, 66, 66, 0.6);
+        animation: crackStrike 320ms ease-out both;
       }
 
       .fifty.cracked::before {
-        top: 46%;
-        transform: rotate(-16deg);
+        transform: rotate(-18deg);
       }
 
       .fifty.cracked::after {
-        top: 53%;
-        transform: rotate(13deg);
+        transform: rotate(18deg);
+        animation-delay: 60ms;
+      }
+
+      .mirror-cracks {
+        position: absolute;
+        inset: 6% -6%;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+
+      .fifty.cracked .mirror-cracks {
+        opacity: 1;
+      }
+
+      .mirror-cracks .crack {
+        position: absolute;
+        height: 2px;
+        transform-origin: left center;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 210, 210, 0),
+          rgba(255, 210, 210, 0.9),
+          rgba(255, 210, 210, 0)
+        );
+        animation: crackGrow 260ms ease-out both;
+      }
+
+      .mirror-cracks .c1 {
+        width: 46%;
+        left: 8%;
+        top: 26%;
+        transform: rotate(11deg);
+      }
+
+      .mirror-cracks .c2 {
+        width: 40%;
+        right: 6%;
+        top: 32%;
+        transform: rotate(-17deg);
+        animation-delay: 40ms;
+      }
+
+      .mirror-cracks .c3 {
+        width: 56%;
+        left: 18%;
+        top: 50%;
+        transform: rotate(-6deg);
+        animation-delay: 70ms;
+      }
+
+      .mirror-cracks .c4 {
+        width: 35%;
+        left: 9%;
+        bottom: 24%;
+        transform: rotate(17deg);
+        animation-delay: 90ms;
+      }
+
+      .mirror-cracks .c5 {
+        width: 43%;
+        right: 10%;
+        bottom: 18%;
+        transform: rotate(-12deg);
+        animation-delay: 120ms;
       }
 
       .prob-arrows {
@@ -240,14 +308,8 @@
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.25);
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      .arrow-pill.reveal {
         opacity: 1;
         transform: translateY(0);
-        transition: all 440ms ease;
       }
 
       .flow-wrap {
@@ -306,6 +368,69 @@
 
       .flow-wrap.flowed [data-door="remain"] .water {
         height: 67%;
+      }
+
+      .proof-grid {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .proof-card {
+        padding: 1.1rem;
+      }
+
+      .proof-title {
+        color: var(--title-contrast);
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+      }
+
+      .proof-line {
+        color: var(--text);
+        margin-top: 0.45rem;
+        font-size: clamp(1rem, 1.7vw, 1.28rem);
+      }
+
+      .proof-note {
+        margin-top: 0.8rem;
+        color: var(--muted);
+      }
+
+      .proof-eqn {
+        margin-top: 0.85rem;
+        padding: 0.7rem 0.85rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        color: var(--title-contrast);
+        font-weight: 700;
+        font-size: clamp(1.1rem, 2vw, 1.55rem);
+      }
+
+      .proof-bottom {
+        max-width: 46ch;
+      }
+
+      @keyframes crackStrike {
+        0% {
+          opacity: 0;
+          transform: scaleX(0.2);
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes crackGrow {
+        0% {
+          opacity: 0;
+          transform: scaleX(0.15);
+        }
+        100% {
+          opacity: 1;
+        }
       }
 
       .rapid-box {
@@ -505,6 +630,36 @@
         display: grid;
       }
 
+      .doodle-panel {
+        position: fixed;
+        right: 20px;
+        bottom: 70px;
+        z-index: 9;
+        padding: 0.65rem;
+        border-radius: 16px;
+        min-width: 210px;
+        display: none;
+        gap: 0.5rem;
+      }
+
+      .doodle-panel.open {
+        display: grid;
+      }
+
+      .doodle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.7rem;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      .doodle-panel input[type="range"] {
+        width: 100%;
+        accent-color: var(--cyan);
+      }
+
       .theme-option {
         border: 1px solid rgba(255, 255, 255, 0.32);
         border-radius: 10px;
@@ -573,6 +728,10 @@
         }
 
         .flow-wrap {
+          grid-template-columns: 1fr;
+        }
+
+        .proof-grid {
           grid-template-columns: 1fr;
         }
 

@@ -12,6 +12,7 @@
   <body>
     <div class="backdrop"></div>
     <div class="aurora"></div>
+    <div class="atelier-doodles" id="atelierDoodles" aria-hidden="true"></div>
     <div class="math-doodles" aria-hidden="true">
       <div class="doodle tr">
         e<sup>i&pi;</sup> + 1 = 0<br />
@@ -39,12 +40,13 @@
           <div class="full title-hero">
             <div class="kicker">Probability Motivation</div>
             <h1>Can You Trust Your Intuition?</h1>
-            <p class="hero-sub fragment fade-up">Our intuition is amazing...</p>
+            <!-- <p class="hero-sub fragment fade-up">Our intuition is amazing...</p>
             <p class="hero-sub fragment fade-up">
               ...until probability gets involved.
-            </p>
+            </p> -->
             <p class="hero-sub title-meta">
-              Mudassir Shabbir<br />LUMS University
+              Mudassir Shabbir<br />
+              Department of Computer Science<br />LUMS University
             </p>
           </div>
         </section>
@@ -151,11 +153,22 @@
         <section id="slide-trap">
           <div class="kicker">The Trap</div>
           <div class="trap">
-            <div class="fifty" id="fiftyText">50%</div>
+            <div class="fifty" id="fiftyText">
+              50%
+              <span class="mirror-cracks" aria-hidden="true">
+                <span class="crack c1"></span>
+                <span class="crack c2"></span>
+                <span class="crack c3"></span>
+                <span class="crack c4"></span>
+                <span class="crack c5"></span>
+              </span>
+            </div>
             <div class="prob-arrows" id="trapArrows">
               <div class="arrow-pill">Looks symmetric</div>
               <div class="arrow-pill">Feels 50-50</div>
-              <div class="arrow-pill">But information is asymmetric</div>
+              <div class="arrow-pill fragment fade-up" id="trapAsymmetry">
+                But information is asymmetric
+              </div>
             </div>
           </div>
         </section>
@@ -184,6 +197,39 @@
           </div>
           <button class="mini-btn" id="runFlow">Flow Probability</button>
           <button class="mini-btn alt" id="resetFlow">Reset</button>
+        </section>
+
+        <section id="slide-proof">
+          <div class="kicker">Proof</div>
+          <h2>Why Switching Is Better (Always)</h2>
+          <div class="proof-grid">
+            <div class="proof-card glass">
+              <div class="proof-title">Case Split by Your First Pick</div>
+              <div class="proof-line">Car picked first: probability = 1/3</div>
+              <div class="proof-line">
+                Car not picked first: probability = 2/3
+              </div>
+              <div class="proof-note">
+                Host always opens a goat door and never opens the car.
+              </div>
+            </div>
+            <div class="proof-card glass">
+              <div class="proof-title">Winning Rules</div>
+              <div class="proof-line">
+                If first pick is car: stay wins, switch loses.
+              </div>
+              <div class="proof-line">
+                If first pick is goat: stay loses, switch wins.
+              </div>
+              <div class="proof-eqn">
+                P(stay wins) = 1/3, P(switch wins) = 2/3
+              </div>
+            </div>
+          </div>
+          <p class="hero-sub proof-bottom fragment fade-up">
+            Switching wins exactly when your first pick was wrong, and that
+            happens 2 out of 3 times.
+          </p>
         </section>
 
         <section id="slide-five">
@@ -283,6 +329,9 @@
             Revisit the opening question: now you want to analyze before
             guessing.
           </div>
+          <div class="hero-sub">
+            Next up: conditional probability and Bayes' rule.
+          </div>
         </section>
       </div>
     </div>
@@ -294,7 +343,7 @@
         aria-label="Toggle full screen"
         title="Toggle full screen"
       >
-        FS
+        ⛶
       </button>
       <button
         class="deck-nav wide"
@@ -302,7 +351,26 @@
         aria-label="Theme options"
         title="Theme options"
       >
-        Theme
+        🎨
+      </button>
+      <button
+        class="deck-nav wide"
+        id="toggleInvertColors"
+        aria-label="Invert colors"
+        title="Invert colors"
+        aria-pressed="false"
+      >
+        ◐
+      </button>
+      <button
+        class="deck-nav wide"
+        id="toggleDoodles"
+        aria-label="Doodle settings"
+        title="Doodle settings"
+        aria-expanded="false"
+        aria-pressed="true"
+      >
+        🖋
       </button>
       <button
         class="deck-nav"
@@ -320,11 +388,48 @@
       </button>
     </div>
     <div class="theme-panel glass" id="themePanel" aria-label="Theme options">
+      <button class="theme-option" data-theme="atelier">
+        Atelier (Default)
+      </button>
       <button class="theme-option" data-theme="default">Deep Blue</button>
       <button class="theme-option" data-theme="sunset">Sunset</button>
       <button class="theme-option" data-theme="dawn">Dawn</button>
       <button class="theme-option" data-theme="paper">Paper</button>
       <button class="theme-option" data-theme="math">Math Ink</button>
+    </div>
+    <div
+      class="doodle-panel glass"
+      id="doodlePanel"
+      aria-label="Doodle settings"
+    >
+      <label class="doodle-row" for="doodleEnabledSwitch">
+        <span>Doodles</span>
+        <input type="checkbox" id="doodleEnabledSwitch" checked />
+      </label>
+      <label class="doodle-row" for="doodleLightnessSlider">
+        <span>Lightness</span>
+        <span id="doodleLightnessValue">72%</span>
+      </label>
+      <input
+        type="range"
+        id="doodleLightnessSlider"
+        min="0"
+        max="145"
+        step="5"
+        value="72"
+      />
+      <label class="doodle-row" for="doodleSizeSlider">
+        <span>Size</span>
+        <span id="doodleSizeValue">100%</span>
+      </label>
+      <input
+        type="range"
+        id="doodleSizeSlider"
+        min="20"
+        max="200"
+        step="5"
+        value="100"
+      />
     </div>
     <div class="deck-progress"><div id="deckProgressBar"></div></div>
 

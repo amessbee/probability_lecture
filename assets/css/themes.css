@@ -32,6 +32,11 @@
         font-family:
           "Avenir Next", "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial,
           sans-serif;
+        transition: filter 220ms ease;
+      }
+
+      body.colors-inverted {
+        filter: invert(1) hue-rotate(180deg);
       }
 
       body[data-theme="sunset"] {
@@ -68,6 +73,63 @@
           radial-gradient(circle at 20% 10%, #1f4b7b 0%, transparent 40%),
           radial-gradient(circle at 85% 85%, #145268 0%, transparent 35%),
           linear-gradient(145deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="atelier"] {
+        --bg: #d9d4ca;
+        --bg2: #ece8df;
+        --cyan: #252525;
+        --blue: #3f3f3f;
+        --mint: #5f5f5f;
+        --orange: #8b7b62;
+        --rose: #a03f3f;
+        --text: #151515;
+        --muted: #4f4f4f;
+        --glass: rgba(255, 255, 255, 0.6);
+        --glass-stroke: rgba(0, 0, 0, 0.16);
+        --title-contrast: #111111;
+        --note-contrast: #2d2d2d;
+        --heads-contrast: #2e2e2e;
+        --fifty-color: #111111;
+        --rapid-feed-color: #1e1e1e;
+        --nav-text: #151515;
+        --title-meta-color: #252525;
+        background:
+          radial-gradient(circle at 16% 18%, #f0ede4 0%, transparent 34%),
+          radial-gradient(circle at 82% 78%, #d6d0c6 0%, transparent 42%),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="atelier"] .aurora {
+        opacity: 0.18;
+        filter: blur(65px) grayscale(1);
+      }
+
+      body[data-theme="atelier"] .backdrop {
+        opacity: 0.1;
+        background-image:
+          radial-gradient(rgba(20, 20, 20, 0.2) 0.55px, transparent 0.55px);
+      }
+
+      body[data-theme="atelier"] .glass {
+        box-shadow:
+          0 5px 18px rgba(22, 22, 22, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      }
+
+      body[data-theme="atelier"] .deck-nav {
+        color: var(--nav-text);
+        border-color: rgba(0, 0, 0, 0.26);
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      body[data-theme="atelier"] .theme-option {
+        border-color: rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      body[data-theme="atelier"] .mini-btn {
+        color: #f5f5f5;
       }
 
       body[data-theme="paper"] {
@@ -193,6 +255,86 @@
         display: none;
       }
 
+      .atelier-doodles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        display: none;
+      }
+
+      .atelier-doodle {
+        position: absolute;
+        --base-x: 0px;
+        --base-y: 0px;
+        transform: translate(var(--base-x), var(--base-y))
+          rotate(var(--tilt, 0deg));
+        max-width: min(36vw, 460px);
+        animation: atelierFloat 9s ease-in-out infinite;
+        animation-fill-mode: both;
+      }
+
+      .atelier-doodle-img {
+        display: block;
+        width: auto;
+        max-width: 100%;
+        max-height: min(26vh, 260px);
+        transform: scale(calc(var(--scale, 1) * var(--doodle-zoom, 1)));
+        transform-origin: center;
+        opacity: var(--doodle-opacity, 0.4);
+        filter: grayscale(1) contrast(1.03)
+          brightness(var(--doodle-brightness, 0.72));
+      }
+
+      .atelier-doodle.slot-tl {
+        top: 18px;
+        left: 20px;
+      }
+
+      .atelier-doodle.slot-tr {
+        top: 18px;
+        right: 22px;
+        text-align: right;
+      }
+
+      .atelier-doodle.slot-bl {
+        bottom: 22px;
+        left: 18px;
+      }
+
+      .atelier-doodle.slot-br {
+        bottom: 86px;
+        right: 18px;
+        text-align: right;
+      }
+
+      .atelier-doodle.slot-ml {
+        left: 10px;
+        top: 42%;
+      }
+
+      .atelier-doodle.slot-mr {
+        right: 10px;
+        top: 38%;
+        text-align: right;
+      }
+
+      .atelier-doodle.slot-tm {
+        left: 50%;
+        top: 10px;
+        --base-x: -50%;
+      }
+
+      .atelier-doodle.slot-bm {
+        left: 50%;
+        bottom: 72px;
+        --base-x: -50%;
+      }
+
+      body.doodles-enabled .atelier-doodles {
+        display: block;
+      }
+
       .math-doodles .doodle {
         position: absolute;
         font-family:
@@ -275,6 +417,16 @@
         }
         to {
           transform: translate3d(2%, -2%, 0) scale(1.08);
+        }
+      }
+
+      @keyframes atelierFloat {
+        0%,
+        100% {
+          transform: translate(var(--base-x), var(--base-y)) rotate(var(--tilt, 0deg));
+        }
+        50% {
+          transform: translate(calc(var(--base-x) + 1px), calc(var(--base-y) - 2px)) rotate(calc(var(--tilt, 0deg) + 0.3deg));
         }
       }
 

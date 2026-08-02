@@ -1,18 +1,18 @@
 const state = {
-        pickedDoor: 0,
-        carDoor: 2,
-        stage1Picked: null,
-        lastDoorPick: null,
-        doorIntroToken: 0,
-        doorIntroPhase: "idle",
-      };
+  pickedDoor: 0,
+  carDoor: 2,
+  stage1Picked: null,
+  lastDoorPick: null,
+  doorIntroToken: 0,
+  doorIntroPhase: "idle",
+};
 
-      function sleep(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      }
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-      function doorMarkup(index, idPrefix) {
-        return `
+function doorMarkup(index, idPrefix) {
+  return `
           <div class="door-card glass" data-idx="${index}">
             <button class="door-hit" aria-label="Door ${index + 1}">
               <svg class="door-svg" viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg">
@@ -112,492 +112,856 @@ const state = {
             </button>
           </div>
         `;
-      }
+}
 
-      function buildDoors(targetId, idPrefix, interactive = false) {
-        const el = document.getElementById(targetId);
-        el.innerHTML = [0, 1, 2].map((i) => doorMarkup(i, idPrefix)).join("");
-        if (interactive) {
-          el.querySelectorAll(".door-card").forEach((card) => {
-            card.addEventListener("click", () => {
-              el.querySelectorAll(".door-card").forEach((c) =>
-                c.classList.remove("active"),
-              );
-              card.classList.add("active");
-              const idx = Number(card.dataset.idx);
-              state.stage1Picked = idx;
-              state.pickedDoor = idx;
-              state.lastDoorPick = idx;
-              document.getElementById("doorPickNote").textContent =
-                `Door ${idx + 1} selected. Audience committed.`;
-            });
-          });
-        }
-      }
-
-      function setStage1Interactivity(enabled) {
-        const stage = document.getElementById("doorStage1");
-        stage.querySelectorAll(".door-card").forEach((card) => {
-          const btn = card.querySelector(".door-hit");
-          const idx = Number(card.dataset.idx);
-          btn.disabled = !enabled;
-          btn.onclick = enabled
-            ? () => {
-                stage
-                  .querySelectorAll(".door-card")
-                  .forEach((c) => c.classList.remove("active"));
-                card.classList.add("active");
-                state.stage1Picked = idx;
-                state.pickedDoor = idx;
-                state.lastDoorPick = idx;
-                document.getElementById("doorPickNote").textContent =
-                  `Door ${idx + 1} selected. Audience committed.`;
-              }
-            : null;
-        });
-      }
-
-      function selectedDoorIndex() {
-        if (Number.isInteger(state.stage1Picked)) {
-          return state.stage1Picked;
-        }
-        if (Number.isInteger(state.lastDoorPick)) {
-          return state.lastDoorPick;
-        }
-        if (Number.isInteger(state.pickedDoor)) {
-          return state.pickedDoor;
-        }
-        return 0;
-      }
-
-      function swapTwoDoorCardsOnce(container, durationMs) {
-        return new Promise((resolve) => {
-          const cards = Array.from(container.querySelectorAll(".door-card"));
-          const first = new Map(
-            cards.map((card) => [card, card.getBoundingClientRect()]),
-          );
-
-          let a = Math.floor(Math.random() * cards.length);
-          let b = Math.floor(Math.random() * cards.length);
-          while (b === a) {
-            b = Math.floor(Math.random() * cards.length);
-          }
-
-          const cardA = cards[a];
-          const cardB = cards[b];
-          const nextA = cardA.nextSibling;
-          const nextB = cardB.nextSibling;
-          const distance = Math.abs(a - b);
-          const arcHeight = distance === 2 ? 88 : 62;
-
-          if (nextA === cardB) {
-            container.insertBefore(cardB, cardA);
-          } else if (nextB === cardA) {
-            container.insertBefore(cardA, cardB);
-          } else {
-            container.insertBefore(cardA, nextB);
-            container.insertBefore(cardB, nextA);
-          }
-
-          const last = new Map(
-            cards.map((card) => [card, card.getBoundingClientRect()]),
-          );
-          const animations = [];
-
-          cards.forEach((card) => {
-            const p0 = first.get(card);
-            const p1 = last.get(card);
-            const dx = p0.left - p1.left;
-            const dy = p0.top - p1.top;
-
-            if (card === cardA || card === cardB) {
-              const lift = card === cardA ? -arcHeight : arcHeight;
-              const delay = card === cardA ? 0 : 28;
-              card.classList.add(card === cardA ? "swap-a" : "swap-b");
-              const frames = [
-                { transform: `translate(${dx}px, ${dy}px) rotate(0deg)` },
-                {
-                  transform: `translate(${dx * 0.82}px, ${dy * 0.82}px) rotate(${card === cardA ? 3 : -3}deg)`,
-                },
-                {
-                  transform: `translate(${dx * 0.5}px, ${dy * 0.5 + lift}px) rotate(${card === cardA ? 11 : -11}deg)`,
-                },
-                { transform: "translate(0px, 0px) rotate(0deg)" },
-              ];
-              animations.push(
-                card.animate(frames, {
-                  duration: durationMs,
-                  delay,
-                  easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-                  fill: "both",
-                }),
-              );
-            } else {
-              const frames = [
-                { transform: `translate(${dx}px, ${dy}px)` },
-                { transform: "translate(0px, 0px)" },
-              ];
-              animations.push(
-                card.animate(frames, {
-                  duration: Math.max(220, durationMs - 40),
-                  delay: 12,
-                  easing: "cubic-bezier(0.25, 0.8, 0.25, 1)",
-                  fill: "both",
-                }),
-              );
-            }
-          });
-
-          Promise.all(
-            animations.map((anim) => anim.finished.catch(() => undefined)),
-          ).then(() => {
-            cards.forEach((card) => {
-              card.style.transform = "";
-              card.classList.remove("swap-a", "swap-b");
-            });
-            resolve();
-          });
-        });
-      }
-
-      function runDoorIntroSequence() {
-        ++state.doorIntroToken;
-        const stage = document.getElementById("doorStage1");
-        const note = document.getElementById("doorPickNote");
-
-        state.stage1Picked = null;
-        state.doorIntroPhase = "revealed_waiting";
-        buildDoors("doorStage1", "s1", false);
-        setStage1Interactivity(false);
-
-        const cards = Array.from(stage.querySelectorAll(".door-card"));
-        state.carDoor = Math.floor(Math.random() * 3);
-
-        cards.forEach((card, idx) => {
-          card.classList.add("open");
-          card.classList.add(idx === state.carDoor ? "show-car" : "show-goat");
-        });
-        note.textContent =
-          "One car. Two goats. Keep your eyes on the car. Click anywhere or press next to shuffle.";
-      }
-
-      async function startDoorShuffleSequence() {
-        if (state.doorIntroPhase !== "revealed_waiting") {
-          return;
-        }
-
-        state.doorIntroPhase = "shuffling";
-        const token = state.doorIntroToken;
-        const stage = document.getElementById("doorStage1");
-        const note = document.getElementById("doorPickNote");
-        const cards = Array.from(stage.querySelectorAll(".door-card"));
-
-        note.textContent = "Closing doors...";
-        cards.forEach((card) => {
-          card.classList.remove("open", "show-goat", "show-car", "active");
-        });
-
-        await sleep(300);
-        note.textContent = "Shuffling...";
-        for (let i = 0; i < 10; i += 1) {
-          if (token !== state.doorIntroToken) {
-            return;
-          }
-          await swapTwoDoorCardsOnce(stage, 760);
-          await sleep(120);
-        }
-
-        if (token !== state.doorIntroToken) {
-          return;
-        }
-
-        note.textContent = "Now pick one door.";
-        state.doorIntroPhase = "ready_pick";
-        setStage1Interactivity(true);
-      }
-
-      function resetOpenStage() {
-        buildDoors("doorStage2", "s2", false);
-        const pick = selectedDoorIndex();
-        const cards = document.querySelectorAll("#doorStage2 .door-card");
-        cards[pick].classList.add("active");
-        document.getElementById("openNote").textContent = "Run the animation.";
-      }
-
-      function runOpenStage() {
-        resetOpenStage();
-        const pick = selectedDoorIndex();
-        const car = state.carDoor;
-        const cards = Array.from(
-          document.querySelectorAll("#doorStage2 .door-card"),
+function buildDoors(targetId, idPrefix, interactive = false) {
+  const el = document.getElementById(targetId);
+  el.innerHTML = [0, 1, 2].map((i) => doorMarkup(i, idPrefix)).join("");
+  if (interactive) {
+    el.querySelectorAll(".door-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        el.querySelectorAll(".door-card").forEach((c) =>
+          c.classList.remove("active"),
         );
-        const candidates = [0, 1, 2].filter((i) => i !== pick && i !== car);
-        const opened =
-          candidates[Math.floor(Math.random() * candidates.length)];
-        setTimeout(() => {
-          cards[opened].classList.add("open", "show-goat");
-          const switchDoor = [0, 1, 2].find((i) => i !== pick && i !== opened);
-          const stayWin = pick === car;
-          const switchWin = switchDoor === car;
-          setTimeout(() => {
-            document.getElementById("openNote").textContent =
-              `Host reveals a goat. Stay would ${stayWin ? "win" : "lose"}; switch would ${switchWin ? "win" : "lose"}.`;
-          }, 620);
-        }, 450);
-      }
+        card.classList.add("active");
+        const idx = Number(card.dataset.idx);
+        state.stage1Picked = idx;
+        state.pickedDoor = idx;
+        state.lastDoorPick = idx;
+        document.getElementById("doorPickNote").textContent =
+          `Door ${idx + 1} selected.`;
+      });
+    });
+  }
+}
 
-      function resetTrap() {
-        const f = document.getElementById("fiftyText");
-        f.classList.remove("cracked");
-        document
-          .querySelectorAll("#trapArrows .arrow-pill")
-          .forEach((a) => a.classList.remove("reveal"));
-      }
-
-      function runTrap() {
-        resetTrap();
-        setTimeout(() => {
-          document.getElementById("fiftyText").classList.add("cracked");
-        }, 380);
-        document.querySelectorAll("#trapArrows .arrow-pill").forEach((a, i) => {
-          setTimeout(() => a.classList.add("reveal"), 680 + i * 220);
-        });
-      }
-
-      function resetFlow() {
-        const wrap = document.getElementById("flowWrap");
-        wrap.classList.remove("flowed");
-        document.getElementById("lPick").textContent = "1/3";
-        document.getElementById("lOpen").textContent = "1/3";
-        document.getElementById("lRemain").textContent = "1/3";
-      }
-
-      function runFlow() {
-        resetFlow();
-        setTimeout(() => {
-          document.getElementById("flowWrap").classList.add("flowed");
-          document.getElementById("lOpen").textContent = "0";
-          document.getElementById("lRemain").textContent = "2/3";
-        }, 350);
-      }
-
-      const fiveOutcomes = [
-        "Game 1: Stay loses | Switch wins",
-        "Game 2: Stay wins | Switch loses",
-        "Game 3: Stay loses | Switch wins",
-        "Game 4: Stay loses | Switch wins",
-        "Game 5: Stay wins | Switch loses",
-      ];
-
-      function resetFive() {
-        document.getElementById("fiveFeed").textContent =
-          "Press Start to run 5 rounds.";
-      }
-
-      function runFive() {
-        resetFive();
-        let i = 0;
-        const feed = document.getElementById("fiveFeed");
-        const timer = setInterval(() => {
-          if (i >= fiveOutcomes.length) {
-            clearInterval(timer);
-            return;
-          }
-          feed.textContent = fiveOutcomes.slice(0, i + 1).join("  |  ");
-          i += 1;
-        }, 520);
-      }
-
-      const sim = {
-        running: false,
-        requestId: 0,
-      };
-
-      function resetSim() {
-        sim.running = false;
-        sim.requestId += 1;
-        document.getElementById("simCounter").textContent = "Games: 0";
-        document.getElementById("stayFill").style.width = "0%";
-        document.getElementById("switchFill").style.width = "0%";
-        document.getElementById("stayPct").textContent = "0%";
-        document.getElementById("switchPct").textContent = "0%";
-      }
-
-      function runSim(total) {
-        if (sim.running) {
-          return;
+function setStage1Interactivity(enabled) {
+  const stage = document.getElementById("doorStage1");
+  stage.querySelectorAll(".door-card").forEach((card) => {
+    const btn = card.querySelector(".door-hit");
+    const idx = Number(card.dataset.idx);
+    btn.disabled = !enabled;
+    btn.onclick = enabled
+      ? () => {
+          stage
+            .querySelectorAll(".door-card")
+            .forEach((c) => c.classList.remove("active"));
+          card.classList.add("active");
+          state.stage1Picked = idx;
+          state.pickedDoor = idx;
+          state.lastDoorPick = idx;
+          document.getElementById("doorPickNote").textContent =
+            `Door ${idx + 1} selected. Audience committed.`;
         }
-        sim.running = true;
-        const current = ++sim.requestId;
+      : null;
+  });
+}
 
-        let games = 0;
-        let stayWins = 0;
-        let switchWins = 0;
+function selectedDoorIndex() {
+  if (Number.isInteger(state.stage1Picked)) {
+    return state.stage1Picked;
+  }
+  if (Number.isInteger(state.lastDoorPick)) {
+    return state.lastDoorPick;
+  }
+  if (Number.isInteger(state.pickedDoor)) {
+    return state.pickedDoor;
+  }
+  return 0;
+}
 
-        function tick() {
-          if (current !== sim.requestId) {
-            sim.running = false;
-            return;
-          }
+function swapTwoDoorCardsOnce(container, durationMs) {
+  return new Promise((resolve) => {
+    const cards = Array.from(container.querySelectorAll(".door-card"));
+    const first = new Map(
+      cards.map((card) => [card, card.getBoundingClientRect()]),
+    );
 
-          const batch = 120;
-          for (let i = 0; i < batch && games < total; i += 1) {
-            const car = Math.floor(Math.random() * 3);
-            const pick = Math.floor(Math.random() * 3);
-            const hostChoices = [0, 1, 2].filter(
-              (d) => d !== pick && d !== car,
-            );
-            const opened =
-              hostChoices[Math.floor(Math.random() * hostChoices.length)];
-            const switched = [0, 1, 2].find((d) => d !== pick && d !== opened);
-            if (pick === car) {
-              stayWins += 1;
-            }
-            if (switched === car) {
-              switchWins += 1;
-            }
-            games += 1;
-          }
+    let a = Math.floor(Math.random() * cards.length);
+    let b = Math.floor(Math.random() * cards.length);
+    while (b === a) {
+      b = Math.floor(Math.random() * cards.length);
+    }
 
-          const stayPct = games ? (stayWins / games) * 100 : 0;
-          const switchPct = games ? (switchWins / games) * 100 : 0;
-          document.getElementById("simCounter").textContent = `Games: ${games}`;
-          document.getElementById("stayFill").style.width =
-            `${stayPct.toFixed(1)}%`;
-          document.getElementById("switchFill").style.width =
-            `${switchPct.toFixed(1)}%`;
-          document.getElementById("stayPct").textContent =
-            `${stayPct.toFixed(1)}%`;
-          document.getElementById("switchPct").textContent =
-            `${switchPct.toFixed(1)}%`;
+    const cardA = cards[a];
+    const cardB = cards[b];
+    const nextA = cardA.nextSibling;
+    const nextB = cardB.nextSibling;
+    const distance = Math.abs(a - b);
+    const arcHeight = distance === 2 ? 88 : 62;
 
-          if (games < total) {
-            requestAnimationFrame(tick);
-          } else {
-            sim.running = false;
-          }
-        }
+    if (nextA === cardB) {
+      container.insertBefore(cardB, cardA);
+    } else if (nextB === cardA) {
+      container.insertBefore(cardA, cardB);
+    } else {
+      container.insertBefore(cardA, nextB);
+      container.insertBefore(cardB, nextA);
+    }
 
-        tick();
+    const last = new Map(
+      cards.map((card) => [card, card.getBoundingClientRect()]),
+    );
+    const animations = [];
+
+    cards.forEach((card) => {
+      const p0 = first.get(card);
+      const p1 = last.get(card);
+      const dx = p0.left - p1.left;
+      const dy = p0.top - p1.top;
+
+      if (card === cardA || card === cardB) {
+        const lift = card === cardA ? -arcHeight : arcHeight;
+        const delay = card === cardA ? 0 : 28;
+        card.classList.add(card === cardA ? "swap-a" : "swap-b");
+        const frames = [
+          { transform: `translate(${dx}px, ${dy}px) rotate(0deg)` },
+          {
+            transform: `translate(${dx * 0.82}px, ${dy * 0.82}px) rotate(${card === cardA ? 3 : -3}deg)`,
+          },
+          {
+            transform: `translate(${dx * 0.5}px, ${dy * 0.5 + lift}px) rotate(${card === cardA ? 11 : -11}deg)`,
+          },
+          { transform: "translate(0px, 0px) rotate(0deg)" },
+        ];
+        animations.push(
+          card.animate(frames, {
+            duration: durationMs,
+            delay,
+            easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+            fill: "both",
+          }),
+        );
+      } else {
+        const frames = [
+          { transform: `translate(${dx}px, ${dy}px)` },
+          { transform: "translate(0px, 0px)" },
+        ];
+        animations.push(
+          card.animate(frames, {
+            duration: Math.max(220, durationMs - 40),
+            delay: 12,
+            easing: "cubic-bezier(0.25, 0.8, 0.25, 1)",
+            fill: "both",
+          }),
+        );
       }
+    });
 
-      function build100() {
-        const grid = document.getElementById("grid100");
-        grid.innerHTML = "";
-        for (let i = 0; i < 100; i += 1) {
-          const d = document.createElement("div");
-          d.className = "mini-door";
-          d.dataset.i = String(i);
-          grid.appendChild(d);
-        }
+    Promise.all(
+      animations.map((anim) => anim.finished.catch(() => undefined)),
+    ).then(() => {
+      cards.forEach((card) => {
+        card.style.transform = "";
+        card.classList.remove("swap-a", "swap-b");
+      });
+      resolve();
+    });
+  });
+}
 
-        const chosen = 8;
-        const car = 87;
-        const doors = Array.from(grid.children);
-        doors[chosen].classList.add("chosen");
+function runDoorIntroSequence() {
+  ++state.doorIntroToken;
+  const stage = document.getElementById("doorStage1");
+  const note = document.getElementById("doorPickNote");
 
-        return { doors, chosen, car };
+  state.stage1Picked = null;
+  state.doorIntroPhase = "revealed_waiting";
+  buildDoors("doorStage1", "s1", false);
+  setStage1Interactivity(false);
+
+  const cards = Array.from(stage.querySelectorAll(".door-card"));
+  state.carDoor = Math.floor(Math.random() * 3);
+
+  cards.forEach((card, idx) => {
+    card.classList.add("open");
+    card.classList.add(idx === state.carDoor ? "show-car" : "show-goat");
+  });
+  note.textContent = "One car. Two goats. Keep your eyes on the car.";
+}
+
+async function startDoorShuffleSequence() {
+  if (state.doorIntroPhase !== "revealed_waiting") {
+    return;
+  }
+
+  state.doorIntroPhase = "shuffling";
+  const token = state.doorIntroToken;
+  const stage = document.getElementById("doorStage1");
+  const note = document.getElementById("doorPickNote");
+  const cards = Array.from(stage.querySelectorAll(".door-card"));
+
+  note.textContent = "Closing doors...";
+  cards.forEach((card) => {
+    card.classList.remove("open", "show-goat", "show-car", "active");
+  });
+
+  await sleep(300);
+  note.textContent = "Shuffling...";
+  for (let i = 0; i < 10; i += 1) {
+    if (token !== state.doorIntroToken) {
+      return;
+    }
+    await swapTwoDoorCardsOnce(stage, 760);
+    await sleep(120);
+  }
+
+  if (token !== state.doorIntroToken) {
+    return;
+  }
+
+  note.textContent = "Now pick one door.";
+  state.doorIntroPhase = "ready_pick";
+  setStage1Interactivity(true);
+}
+
+function resetOpenStage() {
+  buildDoors("doorStage2", "s2", false);
+  const pick = selectedDoorIndex();
+  const cards = document.querySelectorAll("#doorStage2 .door-card");
+  cards[pick].classList.add("active");
+  document.getElementById("openNote").textContent = "Run the animation.";
+}
+
+function runOpenStage() {
+  resetOpenStage();
+  const pick = selectedDoorIndex();
+  const car = state.carDoor;
+  const cards = Array.from(document.querySelectorAll("#doorStage2 .door-card"));
+  const candidates = [0, 1, 2].filter((i) => i !== pick && i !== car);
+  const opened = candidates[Math.floor(Math.random() * candidates.length)];
+  setTimeout(() => {
+    cards[opened].classList.add("open", "show-goat");
+    const switchDoor = [0, 1, 2].find((i) => i !== pick && i !== opened);
+    const stayWin = pick === car;
+    const switchWin = switchDoor === car;
+    setTimeout(() => {
+      document.getElementById("openNote").textContent =
+        `Host reveals a goat. Stay would ${stayWin ? "win" : "lose"}; switch would ${switchWin ? "win" : "lose"}.`;
+    }, 620);
+  }, 450);
+}
+
+function resetTrap() {
+  setTrapCrackState(false);
+}
+
+function runTrap() {
+  resetTrap();
+}
+
+function setTrapCrackState(shouldCrack) {
+  const fifty = document.getElementById("fiftyText");
+  if (!fifty) {
+    return;
+  }
+  fifty.classList.toggle("cracked", shouldCrack);
+}
+
+function onFragmentVisibilityChanged(fragment, isVisible) {
+  if (!fragment) {
+    return;
+  }
+  if (fragment.id === "trapAsymmetry") {
+    setTrapCrackState(isVisible);
+  }
+}
+
+function resetFlow() {
+  const wrap = document.getElementById("flowWrap");
+  wrap.classList.remove("flowed");
+  document.getElementById("lPick").textContent = "1/3";
+  document.getElementById("lOpen").textContent = "1/3";
+  document.getElementById("lRemain").textContent = "1/3";
+}
+
+function runFlow() {
+  resetFlow();
+  setTimeout(() => {
+    document.getElementById("flowWrap").classList.add("flowed");
+    document.getElementById("lOpen").textContent = "0";
+    document.getElementById("lRemain").textContent = "2/3";
+  }, 350);
+}
+
+const fiveOutcomes = [
+  "Game 1: Stay loses | Switch wins",
+  "Game 2: Stay wins | Switch loses",
+  "Game 3: Stay loses | Switch wins",
+  "Game 4: Stay loses | Switch wins",
+  "Game 5: Stay wins | Switch loses",
+];
+
+function resetFive() {
+  document.getElementById("fiveFeed").textContent =
+    "Press Start to run 5 rounds.";
+}
+
+function runFive() {
+  resetFive();
+  let i = 0;
+  const feed = document.getElementById("fiveFeed");
+  const timer = setInterval(() => {
+    if (i >= fiveOutcomes.length) {
+      clearInterval(timer);
+      return;
+    }
+    feed.textContent = fiveOutcomes.slice(0, i + 1).join("  |  ");
+    i += 1;
+  }, 520);
+}
+
+const sim = {
+  running: false,
+  requestId: 0,
+};
+
+function resetSim() {
+  sim.running = false;
+  sim.requestId += 1;
+  document.getElementById("simCounter").textContent = "Games: 0";
+  document.getElementById("stayFill").style.width = "0%";
+  document.getElementById("switchFill").style.width = "0%";
+  document.getElementById("stayPct").textContent = "0%";
+  document.getElementById("switchPct").textContent = "0%";
+}
+
+function runSim(total) {
+  if (sim.running) {
+    return;
+  }
+  sim.running = true;
+  const current = ++sim.requestId;
+
+  let games = 0;
+  let stayWins = 0;
+  let switchWins = 0;
+
+  function tick() {
+    if (current !== sim.requestId) {
+      sim.running = false;
+      return;
+    }
+
+    const batch = 120;
+    for (let i = 0; i < batch && games < total; i += 1) {
+      const car = Math.floor(Math.random() * 3);
+      const pick = Math.floor(Math.random() * 3);
+      const hostChoices = [0, 1, 2].filter((d) => d !== pick && d !== car);
+      const opened =
+        hostChoices[Math.floor(Math.random() * hostChoices.length)];
+      const switched = [0, 1, 2].find((d) => d !== pick && d !== opened);
+      if (pick === car) {
+        stayWins += 1;
       }
-
-      let hundredState = null;
-
-      function reset100() {
-        hundredState = build100();
+      if (switched === car) {
+        switchWins += 1;
       }
+      games += 1;
+    }
 
-      function run100() {
-        if (!hundredState) {
-          hundredState = build100();
-        }
+    const stayPct = games ? (stayWins / games) * 100 : 0;
+    const switchPct = games ? (switchWins / games) * 100 : 0;
+    document.getElementById("simCounter").textContent = `Games: ${games}`;
+    document.getElementById("stayFill").style.width = `${stayPct.toFixed(1)}%`;
+    document.getElementById("switchFill").style.width =
+      `${switchPct.toFixed(1)}%`;
+    document.getElementById("stayPct").textContent = `${stayPct.toFixed(1)}%`;
+    document.getElementById("switchPct").textContent =
+      `${switchPct.toFixed(1)}%`;
 
-        const { doors, chosen, car } = hundredState;
-        let opened = 0;
-        const openable = doors
-          .map((_, i) => i)
-          .filter((i) => i !== chosen && i !== car)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 98);
+    if (games < total) {
+      requestAnimationFrame(tick);
+    } else {
+      sim.running = false;
+    }
+  }
 
-        function step() {
-          if (opened >= openable.length) {
-            doors[car].classList.add("final");
-            doors[chosen].classList.add("final");
-            return;
-          }
-          const idx = openable[opened];
-          doors[idx].classList.add("opened");
-          opened += 1;
-          const delay = opened < 75 ? 22 : 36;
-          setTimeout(step, delay);
-        }
+  tick();
+}
 
-        step();
-      }
+function build100() {
+  const grid = document.getElementById("grid100");
+  grid.innerHTML = "";
+  for (let i = 0; i < 100; i += 1) {
+    const d = document.createElement("div");
+    d.className = "mini-door";
+    d.dataset.i = String(i);
+    grid.appendChild(d);
+  }
 
-      let paradoxShown = false;
-      function runParadox() {
-        if (paradoxShown) {
-          return;
-        }
-        paradoxShown = true;
-        document.querySelectorAll("#paradoxGrid .paradox").forEach((p, i) => {
-          setTimeout(() => p.classList.add("show"), i * 190);
-        });
-      }
+  const chosen = 8;
+  const car = 87;
+  const doors = Array.from(grid.children);
+  doors[chosen].classList.add("chosen");
 
-      function resetParadox() {
-        paradoxShown = false;
-        document
-          .querySelectorAll("#paradoxGrid .paradox")
-          .forEach((p) => p.classList.remove("show"));
-      }
+  return { doors, chosen, car };
+}
 
-      function applyTheme(themeName) {
-        if (!themeName || themeName === "default") {
-          document.body.removeAttribute("data-theme");
-        } else {
-          document.body.setAttribute("data-theme", themeName);
-        }
+let hundredState = null;
 
-        document
-          .querySelectorAll("#themePanel .theme-option")
-          .forEach((btn) => {
-            btn.classList.toggle(
-              "active",
-              btn.dataset.theme === (themeName || "default"),
-            );
-          });
+function reset100() {
+  hundredState = build100();
+}
 
-        try {
-          localStorage.setItem(themeStorageKey, themeName || "default");
-        } catch (_err) {
-          // Ignore storage failures (private mode, restricted browser settings).
-        }
-      }
+function run100() {
+  if (!hundredState) {
+    hundredState = build100();
+  }
 
-      function toggleThemePanel(forceOpen) {
-        const panel = document.getElementById("themePanel");
-        const shouldOpen =
-          typeof forceOpen === "boolean"
-            ? forceOpen
-            : !panel.classList.contains("open");
-        panel.classList.toggle("open", shouldOpen);
-      }
+  const { doors, chosen, car } = hundredState;
+  let opened = 0;
+  const openable = doors
+    .map((_, i) => i)
+    .filter((i) => i !== chosen && i !== car)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 98);
 
-      async function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-          if (document.documentElement.requestFullscreen) {
-            await document.documentElement.requestFullscreen();
-          }
-        } else if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        }
-      }
+  function step() {
+    if (opened >= openable.length) {
+      doors[car].classList.add("final");
+      doors[chosen].classList.add("final");
+      return;
+    }
+    const idx = openable[opened];
+    doors[idx].classList.add("opened");
+    opened += 1;
+    const delay = opened < 75 ? 22 : 36;
+    setTimeout(step, delay);
+  }
 
-      function syncFullscreenButton() {
-        const btn = document.getElementById("toggleFullscreen");
-        const inFullscreen = Boolean(document.fullscreenElement);
-        btn.textContent = inFullscreen ? "Exit" : "FS";
-        btn.title = inFullscreen ? "Exit full screen" : "Toggle full screen";
-      }
+  step();
+}
 
+let paradoxShown = false;
+function runParadox() {
+  if (paradoxShown) {
+    return;
+  }
+  paradoxShown = true;
+  document.querySelectorAll("#paradoxGrid .paradox").forEach((p, i) => {
+    setTimeout(() => p.classList.add("show"), i * 190);
+  });
+}
+
+function resetParadox() {
+  paradoxShown = false;
+  document
+    .querySelectorAll("#paradoxGrid .paradox")
+    .forEach((p) => p.classList.remove("show"));
+}
+
+const doodlesStorageKey = "probability_lecture_doodles_enabled";
+const doodleLightnessStorageKey = "probability_lecture_doodle_lightness";
+const doodleZoomStorageKey = "probability_lecture_doodle_zoom";
+const invertColorsStorageKey = "probability_lecture_invert_colors";
+let doodlesEnabled = true;
+let doodleLightness = 0.72;
+let doodleZoom = 1;
+let colorsInverted = false;
+
+const curatedDoodles = {
+  frame: [
+    "assets/doodles/ppt_curated/doodle_01.png",
+    "assets/doodles/ppt_curated/doodle_02.png",
+    "assets/doodles/ppt_curated/doodle_03.png",
+    "assets/doodles/ppt_curated/doodle_04.png",
+    "assets/doodles/ppt_curated/doodle_05.png",
+    "assets/doodles/ppt_curated/doodle_06.png",
+    "assets/doodles/ppt_curated/doodle_07.png",
+  ],
+  corners: [
+    "assets/doodles/ppt_curated/doodle_08.png",
+    "assets/doodles/ppt_curated/doodle_09.png",
+  ],
+  middle: [
+    "assets/doodles/ppt_curated/doodle_10.png",
+    "assets/doodles/ppt_curated/doodle_11.png",
+  ],
+  single: ["assets/doodles/ppt_curated/doodle_12.png"],
+};
+
+const atelierSlots = [
+  { cls: "slot-tl", tilt: "-4deg", size: "0.84rem" },
+  { cls: "slot-tr", tilt: "3deg", size: "0.82rem" },
+  { cls: "slot-bl", tilt: "2deg", size: "0.83rem" },
+  { cls: "slot-br", tilt: "-3deg", size: "0.83rem" },
+  { cls: "slot-ml", tilt: "-2deg", size: "0.78rem" },
+  { cls: "slot-mr", tilt: "2deg", size: "0.78rem" },
+  { cls: "slot-tm", tilt: "-1deg", size: "0.8rem" },
+  { cls: "slot-bm", tilt: "1deg", size: "0.8rem" },
+];
+
+function hashText(value) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function next() {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function pickDistinct(list, count, rand) {
+  const pool = list.slice();
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(rand() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, Math.min(count, pool.length));
+}
+
+function slotByClass(cls) {
+  return atelierSlots.find((s) => s.cls === cls) || atelierSlots[0];
+}
+
+function doodlePackForSlide(slideEl, slideIndex, rand) {
+  const id = slideEl?.id || "";
+
+  if (slideEl?.querySelector(".full") || id === "slide-trap") {
+    return {
+      doodles: curatedDoodles.frame,
+      slots: [
+        slotByClass("slot-tl"),
+        slotByClass("slot-tr"),
+        slotByClass("slot-ml"),
+        slotByClass("slot-mr"),
+        slotByClass("slot-bl"),
+        slotByClass("slot-br"),
+        slotByClass("slot-tm"),
+      ],
+    };
+  }
+
+  if (
+    id === "slide-flow" ||
+    id === "slide-proof" ||
+    slideEl?.querySelector(".flow-wrap")
+  ) {
+    return {
+      doodles: curatedDoodles.middle,
+      slots: [slotByClass("slot-tm"), slotByClass("slot-bm")],
+    };
+  }
+
+  if (
+    slideEl?.querySelector(".examples-grid") ||
+    slideEl?.querySelector(".sim-panel")
+  ) {
+    return {
+      doodles: curatedDoodles.corners,
+      slots: [slotByClass("slot-tl"), slotByClass("slot-br")],
+    };
+  }
+
+  const singleSlot = pickDistinct(atelierSlots, 1, rand);
+  return {
+    doodles: curatedDoodles.single,
+    slots: singleSlot,
+  };
+}
+
+function refreshAtelierDoodles(slideEl, slideIndex = 0) {
+  const container = document.getElementById("atelierDoodles");
+  if (!container) {
+    return;
+  }
+
+  if (!doodlesEnabled) {
+    container.innerHTML = "";
+    return;
+  }
+
+  let activeSlide = slideEl;
+  let activeIndex = slideIndex;
+  if (!activeSlide) {
+    activeSlide = document.querySelector(".reveal .slides > section.active");
+    if (activeSlide && activeSlide.parentElement) {
+      activeIndex = Array.from(activeSlide.parentElement.children).indexOf(
+        activeSlide,
+      );
+    }
+  }
+
+  const seedKey = `${activeSlide?.id || "slide"}-${activeIndex}`;
+  const rand = mulberry32(hashText(seedKey));
+  const pack = doodlePackForSlide(activeSlide, activeIndex, rand);
+  const slots = pack.slots;
+  const doodles = pack.doodles;
+
+  container.innerHTML = "";
+  slots.forEach((slot, i) => {
+    const div = document.createElement("div");
+    div.className = `atelier-doodle ${slot.cls}`;
+    div.style.setProperty("--tilt", slot.tilt);
+    div.style.setProperty("--size", slot.size);
+    div.style.setProperty("--scale", `${(0.86 + rand() * 0.5).toFixed(2)}`);
+    div.style.animationDelay = `${Math.floor(rand() * 1800)}ms`;
+
+    const img = document.createElement("img");
+    img.className = "atelier-doodle-img";
+    img.src = doodles[i % doodles.length];
+    img.alt = "";
+    img.loading = "eager";
+    img.decoding = "async";
+    div.appendChild(img);
+
+    container.appendChild(div);
+  });
+}
+
+function setDoodlesEnabled(enabled, persist = true) {
+  doodlesEnabled = Boolean(enabled);
+  document.body.classList.toggle("doodles-enabled", doodlesEnabled);
+  syncDoodleControls();
+  refreshAtelierDoodles();
+
+  if (!persist) {
+    return;
+  }
+  try {
+    localStorage.setItem(doodlesStorageKey, doodlesEnabled ? "1" : "0");
+  } catch (_err) {
+    // Ignore storage failures.
+  }
+}
+
+function restoreDoodlesPreference(defaultEnabled) {
+  let enabled = Boolean(defaultEnabled);
+  try {
+    const saved = localStorage.getItem(doodlesStorageKey);
+    if (saved === "1" || saved === "0") {
+      enabled = saved === "1";
+    }
+  } catch (_err) {
+    // Ignore storage failures and keep default.
+  }
+  setDoodlesEnabled(enabled, false);
+}
+
+function toggleDoodles() {
+  toggleDoodlesPanel();
+}
+
+function setDoodleLightness(value, persist = true) {
+  doodleLightness = Math.max(0, Math.min(1.45, value));
+  const normalized = doodleLightness / 1.45;
+  document.body.style.setProperty(
+    "--doodle-brightness",
+    doodleLightness.toFixed(2),
+  );
+  document.body.style.setProperty(
+    "--doodle-opacity",
+    (normalized * 0.8).toFixed(3),
+  );
+  syncDoodleControls();
+
+  if (!persist) {
+    return;
+  }
+  try {
+    localStorage.setItem(doodleLightnessStorageKey, doodleLightness.toFixed(2));
+  } catch (_err) {
+    // Ignore storage failures.
+  }
+}
+
+function restoreDoodleLightnessPreference() {
+  let value = 0.72;
+  try {
+    const saved = Number(localStorage.getItem(doodleLightnessStorageKey));
+    if (Number.isFinite(saved)) {
+      value = saved;
+    }
+  } catch (_err) {
+    // Ignore storage failures and keep default.
+  }
+  setDoodleLightness(value, false);
+}
+
+function setDoodleZoom(value, persist = true) {
+  doodleZoom = Math.max(0.2, Math.min(2, value));
+  document.body.style.setProperty("--doodle-zoom", doodleZoom.toFixed(2));
+  syncDoodleControls();
+
+  if (!persist) {
+    return;
+  }
+  try {
+    localStorage.setItem(doodleZoomStorageKey, doodleZoom.toFixed(2));
+  } catch (_err) {
+    // Ignore storage failures.
+  }
+}
+
+function restoreDoodleZoomPreference() {
+  let value = 1;
+  try {
+    const saved = Number(localStorage.getItem(doodleZoomStorageKey));
+    if (Number.isFinite(saved)) {
+      value = saved;
+    }
+  } catch (_err) {
+    // Ignore storage failures and keep default.
+  }
+  setDoodleZoom(value, false);
+}
+
+function setInvertedColors(enabled, persist = true) {
+  colorsInverted = Boolean(enabled);
+  document.body.classList.toggle("colors-inverted", colorsInverted);
+  syncInvertColorsButton();
+
+  if (!persist) {
+    return;
+  }
+  try {
+    localStorage.setItem(invertColorsStorageKey, colorsInverted ? "1" : "0");
+  } catch (_err) {
+    // Ignore storage failures.
+  }
+}
+
+function toggleInvertedColors() {
+  setInvertedColors(!colorsInverted);
+}
+
+function restoreInvertedColorsPreference() {
+  let enabled = false;
+  try {
+    const saved = localStorage.getItem(invertColorsStorageKey);
+    if (saved === "1" || saved === "0") {
+      enabled = saved === "1";
+    }
+  } catch (_err) {
+    // Ignore storage failures and keep default.
+  }
+  setInvertedColors(enabled, false);
+}
+
+function applyTheme(themeName) {
+  if (!themeName || themeName === "default") {
+    document.body.removeAttribute("data-theme");
+  } else {
+    document.body.setAttribute("data-theme", themeName);
+  }
+
+  document.querySelectorAll("#themePanel .theme-option").forEach((btn) => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.theme === (themeName || "default"),
+    );
+  });
+
+  try {
+    localStorage.setItem(themeStorageKey, themeName || "default");
+  } catch (_err) {
+    // Ignore storage failures (private mode, restricted browser settings).
+  }
+
+  refreshAtelierDoodles();
+}
+
+function toggleThemePanel(forceOpen) {
+  const panel = document.getElementById("themePanel");
+  const shouldOpen =
+    typeof forceOpen === "boolean"
+      ? forceOpen
+      : !panel.classList.contains("open");
+  panel.classList.toggle("open", shouldOpen);
+}
+
+function toggleDoodlesPanel(forceOpen) {
+  const panel = document.getElementById("doodlePanel");
+  if (!panel) {
+    return;
+  }
+  const shouldOpen =
+    typeof forceOpen === "boolean"
+      ? forceOpen
+      : !panel.classList.contains("open");
+  panel.classList.toggle("open", shouldOpen);
+  syncDoodleControls();
+}
+
+async function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    }
+  } else if (document.exitFullscreen) {
+    await document.exitFullscreen();
+  }
+}
+
+function syncFullscreenButton() {
+  const btn = document.getElementById("toggleFullscreen");
+  const inFullscreen = Boolean(document.fullscreenElement);
+  btn.textContent = inFullscreen ? "🗗" : "⛶";
+  btn.title = inFullscreen ? "Exit full screen" : "Toggle full screen";
+}
+
+function syncInvertColorsButton() {
+  const btn = document.getElementById("toggleInvertColors");
+  if (!btn) {
+    return;
+  }
+  btn.textContent = colorsInverted ? "◑" : "◐";
+  btn.title = colorsInverted ? "Restore original colors" : "Invert colors";
+  btn.setAttribute("aria-pressed", colorsInverted ? "true" : "false");
+}
+
+function syncDoodlesButton() {
+  const btn = document.getElementById("toggleDoodles");
+  const panel = document.getElementById("doodlePanel");
+  if (!btn) {
+    return;
+  }
+  btn.textContent = doodlesEnabled ? "🖋" : "⊘";
+  btn.title = "Doodle settings";
+  btn.setAttribute("aria-pressed", doodlesEnabled ? "true" : "false");
+  btn.setAttribute(
+    "aria-expanded",
+    panel?.classList.contains("open") ? "true" : "false",
+  );
+}
+
+function syncDoodleControls() {
+  const lightnessSlider = document.getElementById("doodleLightnessSlider");
+  const lightnessValue = document.getElementById("doodleLightnessValue");
+  const sizeSlider = document.getElementById("doodleSizeSlider");
+  const sizeValue = document.getElementById("doodleSizeValue");
+  const enabledSwitch = document.getElementById("doodleEnabledSwitch");
+  if (
+    !lightnessSlider ||
+    !lightnessValue ||
+    !sizeSlider ||
+    !sizeValue ||
+    !enabledSwitch
+  ) {
+    syncDoodlesButton();
+    return;
+  }
+
+  const lightnessPct = Math.round(doodleLightness * 100);
+  const sizePct = Math.round(doodleZoom * 100);
+  lightnessSlider.value = String(lightnessPct);
+  lightnessSlider.disabled = !doodlesEnabled;
+  lightnessValue.textContent = `${lightnessPct}%`;
+  sizeSlider.value = String(sizePct);
+  sizeSlider.disabled = !doodlesEnabled;
+  sizeValue.textContent = `${sizePct}%`;
+  enabledSwitch.checked = doodlesEnabled;
+
+  syncDoodlesButton();
+}
