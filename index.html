@@ -18,6 +18,12 @@
         --muted: #a9bfd5;
         --glass: rgba(255, 255, 255, 0.08);
         --glass-stroke: rgba(255, 255, 255, 0.2);
+        --title-contrast: #dcecff;
+        --note-contrast: #9fc3de;
+        --heads-contrast: #ffd896;
+        --fifty-color: #f4fbff;
+        --rapid-feed-color: #def4ff;
+        --nav-text: #ffffff;
       }
 
       html,
@@ -83,10 +89,67 @@
         --muted: #475569;
         --glass: rgba(255, 255, 255, 0.58);
         --glass-stroke: rgba(15, 23, 42, 0.12);
+        --title-contrast: #1f2937;
+        --note-contrast: #334155;
+        --heads-contrast: #92400e;
+        --fifty-color: #111827;
+        --rapid-feed-color: #1f2937;
+        --nav-text: #1f2937;
         background:
           radial-gradient(circle at 20% 10%, #efe9dd 0%, transparent 40%),
           radial-gradient(circle at 85% 85%, #e6ddd0 0%, transparent 35%),
           linear-gradient(145deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="math"] {
+        --bg: #f8f8f8;
+        --bg2: #ffffff;
+        --cyan: #111111;
+        --blue: #1f1f1f;
+        --mint: #2e2e2e;
+        --orange: #3b3b3b;
+        --rose: #4a4a4a;
+        --text: #111111;
+        --muted: #3f3f3f;
+        --glass: rgba(255, 255, 255, 0.75);
+        --glass-stroke: rgba(17, 17, 17, 0.18);
+        --title-contrast: #101010;
+        --note-contrast: #2f2f2f;
+        --heads-contrast: #1f1f1f;
+        --fifty-color: #111111;
+        --rapid-feed-color: #111111;
+        --nav-text: #111111;
+        background:
+          linear-gradient(90deg, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+        background-size:
+          26px 26px,
+          26px 26px,
+          auto;
+      }
+
+      body[data-theme="math"] .aurora {
+        opacity: 0;
+      }
+
+      body[data-theme="math"] .backdrop {
+        opacity: 0.05;
+      }
+
+      body[data-theme="math"] .deck-nav {
+        color: var(--nav-text);
+        border-color: rgba(17, 17, 17, 0.35);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      body[data-theme="math"] .theme-option {
+        border-color: rgba(17, 17, 17, 0.28);
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      body[data-theme="math"] .mini-btn {
+        color: #f8f8f8;
       }
 
       .backdrop {
@@ -125,6 +188,90 @@
             transparent 48%
           );
         animation: drift 16s ease-in-out infinite alternate;
+      }
+
+      .math-doodles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        display: none;
+      }
+
+      .math-doodles .doodle {
+        position: absolute;
+        font-family:
+          "Bradley Hand", "Segoe Print", "Chalkboard SE", "Comic Sans MS",
+          cursive;
+        font-size: clamp(0.68rem, 1.2vw, 0.84rem);
+        line-height: 1.26;
+        letter-spacing: 0.02em;
+        color: rgba(15, 15, 15, 0.34);
+        text-shadow: 0.3px 0.3px 0 rgba(15, 15, 15, 0.18);
+        white-space: pre;
+        user-select: none;
+        animation: doodleDrift 7.2s ease-in-out infinite;
+      }
+
+      .math-doodles .doodle sup,
+      .math-doodles .doodle sub {
+        font-size: 0.72em;
+        line-height: 0;
+      }
+
+      .math-doodles .tr {
+        top: 14px;
+        right: 18px;
+        text-align: right;
+        transform: rotate(4deg);
+        animation-delay: 0.9s;
+      }
+
+      .math-doodles .bl {
+        bottom: 14px;
+        left: 18px;
+        transform: rotate(3deg);
+        animation-delay: 1.7s;
+      }
+
+      .math-doodles .br {
+        bottom: 88px;
+        right: 18px;
+        text-align: right;
+        transform: rotate(-4deg);
+        animation-delay: 2.5s;
+      }
+
+      body[data-theme="math"] .math-doodles {
+        display: block;
+      }
+
+      @keyframes doodleDrift {
+        0%,
+        100% {
+          filter: blur(0px);
+          transform: translate(0px, 0px) rotate(var(--tilt, 0deg));
+        }
+        30% {
+          filter: blur(0.15px);
+          transform: translate(1px, -1px)
+            rotate(calc(var(--tilt, 0deg) + 0.4deg));
+        }
+        65% {
+          filter: blur(0px);
+          transform: translate(-1px, 1px)
+            rotate(calc(var(--tilt, 0deg) - 0.5deg));
+        }
+      }
+
+      .math-doodles .tr {
+        --tilt: 4deg;
+      }
+      .math-doodles .bl {
+        --tilt: 3deg;
+      }
+      .math-doodles .br {
+        --tilt: -4deg;
       }
 
       @keyframes drift {
@@ -279,7 +426,7 @@
       }
 
       .example-title {
-        color: #dcecff;
+        color: var(--title-contrast);
         font-size: 0.95rem;
         letter-spacing: 0.04em;
       }
@@ -295,7 +442,7 @@
 
       .example-note {
         font-size: 0.85rem;
-        color: #9fc3de;
+        color: var(--note-contrast);
       }
 
       .test-wrap {
@@ -368,7 +515,12 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        background: radial-gradient(circle at 30% 30%, #ffe7a8, #efb952 65%, #b57627 100%);
+        background: radial-gradient(
+          circle at 30% 30%,
+          #ffe7a8,
+          #efb952 65%,
+          #b57627 100%
+        );
         box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34);
         display: grid;
         place-items: center;
@@ -384,7 +536,7 @@
         bottom: 8px;
         display: flex;
         justify-content: space-between;
-        color: #ffd896;
+        color: var(--heads-contrast);
         font-size: 0.85rem;
       }
 
@@ -393,11 +545,21 @@
         animation: headPop 1.6s ease-in-out infinite;
       }
 
-      .heads-row span:nth-child(2) { animation-delay: 0.12s; }
-      .heads-row span:nth-child(3) { animation-delay: 0.24s; }
-      .heads-row span:nth-child(4) { animation-delay: 0.36s; }
-      .heads-row span:nth-child(5) { animation-delay: 0.48s; }
-      .heads-row span:nth-child(6) { animation-delay: 0.6s; }
+      .heads-row span:nth-child(2) {
+        animation-delay: 0.12s;
+      }
+      .heads-row span:nth-child(3) {
+        animation-delay: 0.24s;
+      }
+      .heads-row span:nth-child(4) {
+        animation-delay: 0.36s;
+      }
+      .heads-row span:nth-child(5) {
+        animation-delay: 0.48s;
+      }
+      .heads-row span:nth-child(6) {
+        animation-delay: 0.6s;
+      }
 
       .simpson-wrap {
         width: 100%;
@@ -430,37 +592,83 @@
         animation: barBreathe 1.7s ease-in-out infinite;
       }
 
-      .mini-fill.a1 { width: 40%; background: linear-gradient(90deg, #79d7ff, #3c9ed5); }
-      .mini-fill.b1 { width: 58%; background: linear-gradient(90deg, #ffb37a, #d87a3c); }
-      .mini-fill.a2 { width: 62%; background: linear-gradient(90deg, #79d7ff, #3c9ed5); }
-      .mini-fill.b2 { width: 76%; background: linear-gradient(90deg, #ffb37a, #d87a3c); }
-      .mini-fill.total-a { width: 68%; background: linear-gradient(90deg, #79d7ff, #3c9ed5); }
-      .mini-fill.total-b { width: 55%; background: linear-gradient(90deg, #ffb37a, #d87a3c); }
+      .mini-fill.a1 {
+        width: 40%;
+        background: linear-gradient(90deg, #79d7ff, #3c9ed5);
+      }
+      .mini-fill.b1 {
+        width: 58%;
+        background: linear-gradient(90deg, #ffb37a, #d87a3c);
+      }
+      .mini-fill.a2 {
+        width: 62%;
+        background: linear-gradient(90deg, #79d7ff, #3c9ed5);
+      }
+      .mini-fill.b2 {
+        width: 76%;
+        background: linear-gradient(90deg, #ffb37a, #d87a3c);
+      }
+      .mini-fill.total-a {
+        width: 68%;
+        background: linear-gradient(90deg, #79d7ff, #3c9ed5);
+      }
+      .mini-fill.total-b {
+        width: 55%;
+        background: linear-gradient(90deg, #ffb37a, #d87a3c);
+      }
 
       @keyframes pulseFill {
-        0%, 100% { height: 60%; }
-        50% { height: 68%; }
+        0%,
+        100% {
+          height: 60%;
+        }
+        50% {
+          height: 68%;
+        }
       }
 
       @keyframes tinyGlow {
-        0%, 100% { filter: brightness(1); }
-        50% { filter: brightness(1.25); }
+        0%,
+        100% {
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.25);
+        }
       }
 
       @keyframes coinFlip {
-        0% { transform: translate(-50%, -50%) rotateY(0deg); }
-        100% { transform: translate(-50%, -50%) rotateY(360deg); }
+        0% {
+          transform: translate(-50%, -50%) rotateY(0deg);
+        }
+        100% {
+          transform: translate(-50%, -50%) rotateY(360deg);
+        }
       }
 
       @keyframes headPop {
-        0% { opacity: 0; transform: translateY(5px); }
-        35% { opacity: 1; transform: translateY(0); }
-        100% { opacity: 0.55; transform: translateY(0); }
+        0% {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        35% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0.55;
+          transform: translateY(0);
+        }
       }
 
       @keyframes barBreathe {
-        0%, 100% { opacity: 0.9; }
-        50% { opacity: 1; }
+        0%,
+        100% {
+          opacity: 0.9;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
       .question-pill {
@@ -665,7 +873,7 @@
         font-weight: 700;
         font-size: clamp(4rem, 18vw, 12rem);
         position: relative;
-        color: #f4fbff;
+        color: var(--fifty-color);
       }
 
       .fifty.cracked::before,
@@ -781,7 +989,7 @@
       .rapid-feed {
         min-height: 5.2em;
         font-size: clamp(1.2rem, 2.8vw, 2rem);
-        color: #def4ff;
+        color: var(--rapid-feed-color);
       }
 
       .sim-panel {
@@ -992,7 +1200,7 @@
         border: 1px solid rgba(255, 255, 255, 0.34);
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.14);
-        color: #ffffff;
+        color: var(--nav-text);
         font-size: 1.1rem;
         cursor: pointer;
       }
@@ -1050,6 +1258,26 @@
   <body>
     <div class="backdrop"></div>
     <div class="aurora"></div>
+    <div class="math-doodles" aria-hidden="true">
+      <div class="doodle tr">
+        e<sup>i&pi;</sup> + 1 = 0<br />
+        &int;<sub>0</sub><sup>&infin;</sup> e<sup>-x&sup2;</sup> dx =
+        &radic;&pi;/2<br />
+        &int;<sub>A</sub> B &middot; dA = &mu;<sub>0</sub> I<sub>enc</sub>
+      </div>
+      <div class="doodle bl">
+        &int;<sub>a</sub><sup>b</sup> f&prime;(x) dx = f(b)-f(a)<br />
+        i&hbar;&part;&Psi;/&part;t = H&Psi;<br />
+        S = &int;<sub>0</sub><sup>T</sup> L(q, q&#775;, t) dt
+      </div>
+      <div class="doodle br">
+        R<sub>&mu;&nu;</sub> - (1/2)R g<sub>&mu;&nu;</sub> = 8&pi;G T<sub
+          >&mu;&nu;</sub
+        ><br />
+        &oint; E &middot; dl = - d&Phi;<sub>B</sub>/dt<br />
+        &nabla;&sup2;&phi; = &rho;/&epsilon;<sub>0</sub>
+      </div>
+    </div>
 
     <div class="reveal">
       <div class="slides">
@@ -1061,7 +1289,10 @@
             <p class="hero-sub fragment fade-up">
               ...until probability gets involved.
             </p>
-            <p class="hero-sub title-meta" style="margin-top: 2.1rem; color: #d5e8ff">
+            <p
+              class="hero-sub title-meta"
+              style="margin-top: 2.1rem; color: #d5e8ff"
+            >
               Mudassir Shabbir<br />LUMS University
             </p>
           </div>
@@ -1077,12 +1308,18 @@
                 <div class="test-wrap">
                   <div class="tube"><div class="liquid"></div></div>
                   <div class="risk-bars">
-                    <div class="risk-track"><div class="risk-fill test"></div></div>
-                    <div class="risk-track"><div class="risk-fill base"></div></div>
+                    <div class="risk-track">
+                      <div class="risk-fill test"></div>
+                    </div>
+                    <div class="risk-track">
+                      <div class="risk-fill base"></div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="example-note">Positive result looks huge, base rate is tiny.</div>
+              <div class="example-note">
+                Positive result looks huge, base rate is tiny.
+              </div>
             </div>
 
             <div class="example-card glass fragment fade-up">
@@ -1091,26 +1328,61 @@
                 <div class="coin-zone">
                   <div class="coin">H</div>
                   <div class="heads-row">
-                    <span>H</span><span>H</span><span>H</span><span>H</span><span>H</span><span>H</span>
+                    <span>H</span><span>H</span><span>H</span><span>H</span
+                    ><span>H</span><span>H</span>
                   </div>
                 </div>
               </div>
-              <div class="example-note">Long streaks feel like they must reverse.</div>
+              <div class="example-note">
+                Long streaks feel like they must reverse.
+              </div>
             </div>
 
             <div class="example-card glass fragment fade-up">
               <div class="example-title">Grouped vs Total</div>
               <div class="example-figure">
                 <div class="simpson-wrap">
-                  <div class="group-line"><div class="group-tag">A</div><div class="mini-track"><div class="mini-fill a1"></div></div></div>
-                  <div class="group-line"><div class="group-tag">B</div><div class="mini-track"><div class="mini-fill b1"></div></div></div>
-                  <div class="group-line"><div class="group-tag">A</div><div class="mini-track"><div class="mini-fill a2"></div></div></div>
-                  <div class="group-line"><div class="group-tag">B</div><div class="mini-track"><div class="mini-fill b2"></div></div></div>
-                  <div class="group-line"><div class="group-tag">ΣA</div><div class="mini-track"><div class="mini-fill total-a"></div></div></div>
-                  <div class="group-line"><div class="group-tag">ΣB</div><div class="mini-track"><div class="mini-fill total-b"></div></div></div>
+                  <div class="group-line">
+                    <div class="group-tag">A</div>
+                    <div class="mini-track">
+                      <div class="mini-fill a1"></div>
+                    </div>
+                  </div>
+                  <div class="group-line">
+                    <div class="group-tag">B</div>
+                    <div class="mini-track">
+                      <div class="mini-fill b1"></div>
+                    </div>
+                  </div>
+                  <div class="group-line">
+                    <div class="group-tag">A</div>
+                    <div class="mini-track">
+                      <div class="mini-fill a2"></div>
+                    </div>
+                  </div>
+                  <div class="group-line">
+                    <div class="group-tag">B</div>
+                    <div class="mini-track">
+                      <div class="mini-fill b2"></div>
+                    </div>
+                  </div>
+                  <div class="group-line">
+                    <div class="group-tag">ΣA</div>
+                    <div class="mini-track">
+                      <div class="mini-fill total-a"></div>
+                    </div>
+                  </div>
+                  <div class="group-line">
+                    <div class="group-tag">ΣB</div>
+                    <div class="mini-track">
+                      <div class="mini-fill total-b"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="example-note">Each subgroup improves, but total can flip.</div>
+              <div class="example-note">
+                Each subgroup improves, but total can flip.
+              </div>
             </div>
           </div>
         </section>
@@ -1284,13 +1556,28 @@
     </div>
 
     <div class="deck-controls">
-      <button class="deck-nav wide" id="toggleFullscreen" aria-label="Toggle full screen" title="Toggle full screen">
+      <button
+        class="deck-nav wide"
+        id="toggleFullscreen"
+        aria-label="Toggle full screen"
+        title="Toggle full screen"
+      >
         FS
       </button>
-      <button class="deck-nav wide" id="toggleThemePanel" aria-label="Theme options" title="Theme options">
+      <button
+        class="deck-nav wide"
+        id="toggleThemePanel"
+        aria-label="Theme options"
+        title="Theme options"
+      >
         Theme
       </button>
-      <button class="deck-nav" id="homeSlide" aria-label="Go to title slide" title="Go to title">
+      <button
+        class="deck-nav"
+        id="homeSlide"
+        aria-label="Go to title slide"
+        title="Go to title"
+      >
         &#8962;
       </button>
       <button class="deck-nav" id="prevSlide" aria-label="Previous slide">
@@ -1305,6 +1592,7 @@
       <button class="theme-option" data-theme="sunset">Sunset</button>
       <button class="theme-option" data-theme="dawn">Dawn</button>
       <button class="theme-option" data-theme="paper">Paper</button>
+      <button class="theme-option" data-theme="math">Math Ink</button>
     </div>
     <div class="deck-progress"><div id="deckProgressBar"></div></div>
 
@@ -1913,12 +2201,14 @@
           document.body.setAttribute("data-theme", themeName);
         }
 
-        document.querySelectorAll("#themePanel .theme-option").forEach((btn) => {
-          btn.classList.toggle(
-            "active",
-            btn.dataset.theme === (themeName || "default"),
-          );
-        });
+        document
+          .querySelectorAll("#themePanel .theme-option")
+          .forEach((btn) => {
+            btn.classList.toggle(
+              "active",
+              btn.dataset.theme === (themeName || "default"),
+            );
+          });
 
         try {
           localStorage.setItem(themeStorageKey, themeName || "default");
@@ -2058,14 +2348,12 @@
       document
         .getElementById("toggleThemePanel")
         .addEventListener("click", () => toggleThemePanel());
-      document
-        .querySelectorAll("#themePanel .theme-option")
-        .forEach((btn) => {
-          btn.addEventListener("click", () => {
-            applyTheme(btn.dataset.theme);
-            toggleThemePanel(false);
-          });
+      document.querySelectorAll("#themePanel .theme-option").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          applyTheme(btn.dataset.theme);
+          toggleThemePanel(false);
         });
+      });
       document.getElementById("homeSlide").addEventListener("click", () => {
         showSlide(0);
       });
