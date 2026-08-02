@@ -1,0 +1,280 @@
+:root {
+        --bg: #111827;
+        --bg2: #0b1222;
+        --cyan: #37d7ff;
+        --blue: #60a5fa;
+        --mint: #4de4c4;
+        --orange: #ffb454;
+        --rose: #ff7a8a;
+        --text: #ecf5ff;
+        --muted: #a9bfd5;
+        --glass: rgba(255, 255, 255, 0.08);
+        --glass-stroke: rgba(255, 255, 255, 0.2);
+        --title-contrast: #dcecff;
+        --note-contrast: #9fc3de;
+        --heads-contrast: #ffd896;
+        --fifty-color: #f4fbff;
+        --rapid-feed-color: #def4ff;
+        --nav-text: #ffffff;
+        --title-meta-color: #d5e8ff;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(circle at 20% 10%, #1a2e52 0%, transparent 40%),
+          radial-gradient(circle at 85% 85%, #13395a 0%, transparent 35%),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+        color: var(--text);
+        font-family:
+          "Avenir Next", "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial,
+          sans-serif;
+      }
+
+      body[data-theme="sunset"] {
+        --bg: #2a1325;
+        --bg2: #1a0b1b;
+        --cyan: #ffd166;
+        --blue: #f77f00;
+        --mint: #ef476f;
+        --orange: #ff9f1c;
+        --rose: #ff5d8f;
+        --text: #fff1e8;
+        --muted: #f3c8b8;
+        --glass: rgba(255, 235, 220, 0.08);
+        --glass-stroke: rgba(255, 209, 170, 0.26);
+        background:
+          radial-gradient(circle at 20% 10%, #5b2239 0%, transparent 40%),
+          radial-gradient(circle at 85% 85%, #4a1f2f 0%, transparent 35%),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="dawn"] {
+        --bg: #10243d;
+        --bg2: #091829;
+        --cyan: #7dd3fc;
+        --blue: #60a5fa;
+        --mint: #86efac;
+        --orange: #fbbf24;
+        --rose: #fb7185;
+        --text: #ecfeff;
+        --muted: #b8d7ea;
+        --glass: rgba(230, 247, 255, 0.08);
+        --glass-stroke: rgba(195, 230, 255, 0.22);
+        background:
+          radial-gradient(circle at 20% 10%, #1f4b7b 0%, transparent 40%),
+          radial-gradient(circle at 85% 85%, #145268 0%, transparent 35%),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="paper"] {
+        --bg: #ece6d8;
+        --bg2: #f7f2e8;
+        --cyan: #115e59;
+        --blue: #1d4ed8;
+        --mint: #0f766e;
+        --orange: #b45309;
+        --rose: #be123c;
+        --text: #1f2937;
+        --muted: #475569;
+        --glass: rgba(255, 255, 255, 0.58);
+        --glass-stroke: rgba(15, 23, 42, 0.12);
+        --title-contrast: #1f2937;
+        --note-contrast: #334155;
+        --heads-contrast: #92400e;
+        --fifty-color: #111827;
+        --rapid-feed-color: #1f2937;
+        --nav-text: #1f2937;
+        --title-meta-color: #1f2937;
+        background:
+          radial-gradient(circle at 20% 10%, #efe9dd 0%, transparent 40%),
+          radial-gradient(circle at 85% 85%, #e6ddd0 0%, transparent 35%),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="math"] {
+        --bg: #f8f8f8;
+        --bg2: #ffffff;
+        --cyan: #111111;
+        --blue: #1f1f1f;
+        --mint: #2e2e2e;
+        --orange: #3b3b3b;
+        --rose: #4a4a4a;
+        --text: #111111;
+        --muted: #3f3f3f;
+        --glass: rgba(255, 255, 255, 0.75);
+        --glass-stroke: rgba(17, 17, 17, 0.18);
+        --title-contrast: #101010;
+        --note-contrast: #2f2f2f;
+        --heads-contrast: #1f1f1f;
+        --fifty-color: #111111;
+        --rapid-feed-color: #111111;
+        --nav-text: #111111;
+        --title-meta-color: #111111;
+        background:
+          linear-gradient(90deg, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+          linear-gradient(145deg, var(--bg2), var(--bg));
+        background-size:
+          26px 26px,
+          26px 26px,
+          auto;
+      }
+
+      body[data-theme="math"] .aurora {
+        opacity: 0;
+      }
+
+      body[data-theme="math"] .backdrop {
+        opacity: 0.05;
+      }
+
+      body[data-theme="math"] .deck-nav {
+        color: var(--nav-text);
+        border-color: rgba(17, 17, 17, 0.35);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      body[data-theme="math"] .theme-option {
+        border-color: rgba(17, 17, 17, 0.28);
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      body[data-theme="math"] .mini-btn {
+        color: #f8f8f8;
+      }
+
+      .backdrop {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: radial-gradient(
+          rgba(255, 255, 255, 0.23) 0.6px,
+          transparent 0.6px
+        );
+        background-size: 3px 3px;
+        opacity: 0.12;
+      }
+
+      .aurora {
+        position: fixed;
+        inset: -20vh;
+        z-index: 0;
+        pointer-events: none;
+        filter: blur(45px);
+        background:
+          radial-gradient(
+            circle at 16% 24%,
+            rgba(55, 215, 255, 0.24),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 82% 73%,
+            rgba(77, 228, 196, 0.22),
+            transparent 42%
+          ),
+          radial-gradient(
+            circle at 56% 45%,
+            rgba(96, 165, 250, 0.18),
+            transparent 48%
+          );
+        animation: drift 16s ease-in-out infinite alternate;
+      }
+
+      .math-doodles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        display: none;
+      }
+
+      .math-doodles .doodle {
+        position: absolute;
+        font-family:
+          "Bradley Hand", "Segoe Print", "Chalkboard SE", "Comic Sans MS",
+          cursive;
+        font-size: clamp(0.68rem, 1.2vw, 0.84rem);
+        line-height: 1.26;
+        letter-spacing: 0.02em;
+        color: rgba(15, 15, 15, 0.34);
+        text-shadow: 0.3px 0.3px 0 rgba(15, 15, 15, 0.18);
+        white-space: pre;
+        user-select: none;
+        animation: doodleDrift 7.2s ease-in-out infinite;
+      }
+
+      .math-doodles .doodle sup,
+      .math-doodles .doodle sub {
+        font-size: 0.72em;
+        line-height: 0;
+      }
+
+      .math-doodles .tr {
+        top: 14px;
+        right: 18px;
+        text-align: right;
+        transform: rotate(4deg);
+        animation-delay: 0.9s;
+      }
+
+      .math-doodles .bl {
+        bottom: 14px;
+        left: 18px;
+        transform: rotate(3deg);
+        animation-delay: 1.7s;
+      }
+
+      .math-doodles .br {
+        bottom: 88px;
+        right: 18px;
+        text-align: right;
+        transform: rotate(-4deg);
+        animation-delay: 2.5s;
+      }
+
+      body[data-theme="math"] .math-doodles {
+        display: block;
+      }
+
+      @keyframes doodleDrift {
+        0%,
+        100% {
+          filter: blur(0px);
+          transform: translate(0px, 0px) rotate(var(--tilt, 0deg));
+        }
+        30% {
+          filter: blur(0.15px);
+          transform: translate(1px, -1px)
+            rotate(calc(var(--tilt, 0deg) + 0.4deg));
+        }
+        65% {
+          filter: blur(0px);
+          transform: translate(-1px, 1px)
+            rotate(calc(var(--tilt, 0deg) - 0.5deg));
+        }
+      }
+
+      .math-doodles .tr {
+        --tilt: 4deg;
+      }
+      .math-doodles .bl {
+        --tilt: 3deg;
+      }
+      .math-doodles .br {
+        --tilt: -4deg;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate3d(-2%, 0, 0) scale(1);
+        }
+        to {
+          transform: translate3d(2%, -2%, 0) scale(1.08);
+        }
+      }
+

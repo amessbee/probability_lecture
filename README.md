@@ -1,16 +1,27 @@
 # Interactive Monty Hall Presentation
 
-Single-file cinematic presentation for a 15-20 minute lecture motivating probability through the Monty Hall problem.
+Modular cinematic presentation for a 15-20 minute lecture motivating probability through the Monty Hall problem.
 
 ## Highlights
 
-- Native in-file slide engine with smooth transitions
+- Native lightweight slide engine with smooth transitions
 - Dark gradient + glassmorphism visual style
 - Animated SVG doors, goats, and sports car reveal
 - Probability flow animation (1/3, 1/3, 1/3 -> 1/3, 0, 2/3)
-- Live Monte Carlo simulation (1000 and 5000 games)
+- Live Monte Carlo simulation (1000, 5000, 10000, and 50000 games)
 - 100-door demonstration with 98-door opening animation
+- Fullscreen toggle and theme switcher (including Math Ink theme)
 - Minimal text, visual-first narrative across 11 slides
+
+## Project Structure
+
+- `index.html`: deck markup and script/style includes
+- `assets/css/themes.css`: color themes, backgrounds, doodles, and global visual tokens
+- `assets/css/layout.css`: deck layout, typography, and slide-level structure
+- `assets/css/components.css`: interactive component styles (doors, simulations, controls)
+- `assets/js/core.js`: core interaction logic (games, simulations, theme/fullscreen handlers)
+- `assets/js/deck.js`: slide navigation and fragment/progress behavior
+- `assets/js/init.js`: startup wiring and event listener registration
 
 ## Run
 
@@ -49,4 +60,4 @@ Then open:
 
 ## Offline Guarantee
 
-This presentation is fully self-contained in `index.html` and does not depend on external CDNs, frameworks, or font downloads.
+This presentation is fully local (HTML/CSS/JS files in this repo) and does not depend on external CDNs, frameworks, or font downloads.
