@@ -159,5 +159,3 @@ restoreInvertedColorsPreference();
 syncDoodleControls();
 
 showSlide(initialSlide);
-revealNextFragment();
-revealNextFragment();
