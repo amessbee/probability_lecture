@@ -36,6 +36,9 @@ document
   .getElementById("toggleThemePanel")
   .addEventListener("click", () => toggleThemePanel());
 document
+  .getElementById("toggleDeckMode")
+  .addEventListener("click", toggleDeckMode);
+document
   .getElementById("toggleInvertColors")
   .addEventListener("click", toggleInvertedColors);
 document
@@ -127,6 +130,7 @@ document.getElementById("slide-doors").addEventListener("click", () => {
 });
 
 let initialSlide = 0;
+restoreDeckModePreference();
 try {
   const saved = Number(localStorage.getItem(slideStorageKey));
   if (Number.isInteger(saved)) {

@@ -121,6 +121,86 @@
           </div>
         </section>
 
+        <section id="slide-medical-rigorous" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Medical Test: Base Rates and Bayes</h2>
+          <div class="proof-grid">
+            <div class="proof-card glass">
+              <div class="proof-title">Model Setup</div>
+              <div class="proof-line">Assume prevalence P(D) = 1%.</div>
+              <div class="proof-line">Sensitivity P(+|D) = 99%.</div>
+              <div class="proof-line">False-positive rate P(+|~D) = 5%.</div>
+              <div class="proof-note">
+                Compute P(D|+) with Bayes, not intuition.
+              </div>
+            </div>
+            <div class="proof-card glass">
+              <div class="proof-title">Bayes Calculation</div>
+              <div class="proof-line">
+                P(+) = 0.99(0.01) + 0.05(0.99) = 0.0594
+              </div>
+              <div class="proof-line">P(D|+) = 0.99(0.01) / 0.0594</div>
+              <div class="proof-eqn">P(D|+) = 1/6 = 16.7%</div>
+            </div>
+          </div>
+          <p class="hero-sub proof-bottom">
+            Even with a strong test, rare events can dominate the denominator.
+          </p>
+        </section>
+
+        <section id="slide-coin-rigorous" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Coin Streaks: Independence, Not Memory</h2>
+          <div class="sim-panel">
+            <div class="glass" style="padding: 1rem">
+              <div class="proof-title">Key Fact</div>
+              <p class="tiny">
+                For a fair coin, each toss is independent: P(T next | HHHHHH) =
+                P(T next) = 1/2.
+              </p>
+              <p class="tiny">
+                Independence means past outcomes do not alter future bias.
+              </p>
+            </div>
+            <div class="glass" style="padding: 1rem">
+              <div class="proof-title">Where Intuition Fails</div>
+              <p class="tiny">
+                Humans expect local balancing in short windows. Probability
+                guarantees balancing only in long-run frequencies.
+              </p>
+              <p class="tiny">
+                Streaks are not evidence of correction; they are natural
+                patterns in randomness.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="slide-birthday-rigorous" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Birthday Collision: Exact Probability</h2>
+          <div class="proof-grid">
+            <div class="proof-card glass">
+              <div class="proof-title">Complement Strategy</div>
+              <div class="proof-line">P(match) = 1 - P(no match)</div>
+              <div class="proof-line">
+                P(no match for n people) = prod(k=0 to n-1) (365-k)/365
+              </div>
+              <div class="proof-note">
+                Computing the complement is easier than direct counting.
+              </div>
+            </div>
+            <div class="proof-card glass">
+              <div class="proof-title">For n = 60</div>
+              <div class="proof-line">P(no match) approx 0.006</div>
+              <div class="proof-eqn">P(match) approx 0.994</div>
+              <div class="proof-line">
+                So a shared birthday is extremely likely.
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="slide-doors">
           <div class="kicker">Monty Hall</div>
           <h2>Pick One Door</h2>
@@ -232,6 +312,58 @@
           </p>
         </section>
 
+        <section id="slide-monty-axioms" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Monty Hall Assumptions (Rigorous Form)</h2>
+          <div class="sim-panel">
+            <div class="glass" style="padding: 1rem">
+              <div class="proof-title">Axioms</div>
+              <p class="tiny">1) Car location is uniformly random.</p>
+              <p class="tiny">2) Player picks one door.</p>
+              <p class="tiny">3) Host knows car location.</p>
+              <p class="tiny">
+                4) Host always opens a goat door not picked by player.
+              </p>
+              <p class="tiny">5) Host always offers switch.</p>
+            </div>
+            <div class="glass" style="padding: 1rem">
+              <div class="proof-title">Why Assumptions Matter</div>
+              <p class="tiny">
+                If host behavior changes (sometimes opens randomly or does not
+                always offer switch), posterior probabilities change.
+              </p>
+              <p class="tiny">
+                The famous 2/3 result is model-dependent and therefore testable.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="slide-monty-bayes" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Monty Hall via Bayes Rule</h2>
+          <div class="proof-grid">
+            <div class="proof-card glass">
+              <div class="proof-title">Notation</div>
+              <div class="proof-line">C_i: car behind door i.</div>
+              <div class="proof-line">H_j: host opens door j.</div>
+              <div class="proof-line">Assume player picked door 1.</div>
+            </div>
+            <div class="proof-card glass">
+              <div class="proof-title">Posterior Comparison</div>
+              <div class="proof-line">
+                P(C_1|H_3) prop P(H_3|C_1)P(C_1) = (1/2)(1/3)
+              </div>
+              <div class="proof-line">
+                P(C_2|H_3) prop P(H_3|C_2)P(C_2) = (1)(1/3)
+              </div>
+              <div class="proof-eqn">
+                Normalize: P(C_1|H_3)=1/3, P(C_2|H_3)=2/3
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="slide-five">
           <div class="kicker">Try Again</div>
           <h2>Five Fast Games</h2>
@@ -317,6 +449,120 @@
           </div>
         </section>
 
+        <section id="slide-birthday-paradox-detail" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Birthday Paradox: Why It Grows Fast</h2>
+          <div class="glass" style="padding: 1rem">
+            <p class="tiny">
+              Number of pairs among n people is n(n-1)/2, so comparisons scale
+              quadratically.
+            </p>
+            <p class="tiny">Around n = 23, P(match) already exceeds 50%.</p>
+            <p class="tiny">
+              The paradox is not about strange probability; it is about hidden
+              combinatorial growth.
+            </p>
+          </div>
+        </section>
+
+        <section id="slide-gambler-detail" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Gambler's Fallacy: A Formal Contrast</h2>
+          <div class="proof-grid">
+            <div class="proof-card glass">
+              <div class="proof-title">False Claim</div>
+              <div class="proof-line">"After many heads, tails is due."</div>
+              <div class="proof-note">
+                This assumes negative dependence that is absent.
+              </div>
+            </div>
+            <div class="proof-card glass">
+              <div class="proof-title">Correct Claim</div>
+              <div class="proof-line">
+                For IID tosses: P(T next | history) = 1/2.
+              </div>
+              <div class="proof-line">
+                History changes surprise, not probability.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="slide-boygirl-detail" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Boy or Girl Paradox: Information Granularity</h2>
+          <div class="sim-panel">
+            <div class="glass" style="padding: 1rem">
+              <div class="proof-title">Statement A</div>
+              <p class="tiny">"At least one child is a boy."</p>
+              <p class="tiny">
+                Possible ordered families: BB, BG, GB -> P(BB)=1/3.
+              </p>
+            </div>
+            <div class="glass" style="padding: 1rem">
+              <div class="proof-title">Statement B</div>
+              <p class="tiny">"The older child is a boy."</p>
+              <p class="tiny">Possible: BB, BG -> P(BB)=1/2.</p>
+              <p class="tiny">Different condition, different sample space.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="slide-card-detail" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Card Conditioning: Same Data, Different Query</h2>
+          <div class="glass" style="padding: 1rem">
+            <p class="tiny">
+              Example deck query: from a two-card hand, given one card is an
+              Ace, what is P(both are Aces)?
+            </p>
+            <p class="tiny">
+              Condition descriptions such as "this specific shown card is an
+              Ace" vs "at least one Ace exists" induce different posteriors.
+            </p>
+            <p class="tiny">
+              Lesson: condition statements are operators on sample spaces.
+            </p>
+          </div>
+        </section>
+
+        <section id="slide-simpson-detail" class="long-only">
+          <div class="kicker">Long Lecture Module</div>
+          <h2>Simpson's Paradox: Aggregates Can Reverse</h2>
+          <div class="proof-grid">
+            <div class="proof-card glass">
+              <div class="proof-title">Within Groups</div>
+              <div class="proof-line">
+                Treatment A can outperform B in every subgroup.
+              </div>
+            </div>
+            <div class="proof-card glass">
+              <div class="proof-title">After Aggregation</div>
+              <div class="proof-line">
+                Overall rates can reverse due to different weights.
+              </div>
+              <div class="proof-note">
+                Always inspect confounders before making causal claims.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="slide-long-recap" class="long-only">
+          <div class="kicker">60-Minute Recap</div>
+          <h2>Unified Principle</h2>
+          <div class="quote">
+            Probability errors are usually sample-space errors.
+          </div>
+          <div class="welcome">
+            Define events carefully. Condition precisely. Verify numerically.
+          </div>
+          <div class="revisit">
+            Intuition is useful for ideas; mathematics is required for
+            calibration.
+          </div>
+        </section>
+
         <section>
           <div class="kicker">Closing</div>
           <h2>Why Study Probability?</h2>
@@ -352,6 +598,15 @@
         title="Theme options"
       >
         🎨
+      </button>
+      <button
+        class="deck-nav wide mode-toggle"
+        id="toggleDeckMode"
+        aria-label="Switch lecture length"
+        title="Switch lecture length"
+        aria-pressed="false"
+      >
+        SHORT
       </button>
       <button
         class="deck-nav wide"

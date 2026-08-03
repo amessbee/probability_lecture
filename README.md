@@ -13,6 +13,10 @@ Modular cinematic presentation for a 15-20 minute lecture motivating probability
 - Fullscreen toggle and theme switcher (including Math Ink theme)
 - Minimal text, visual-first narrative across 11 slides
 
+## Published URL
+
+- https://amessbee.github.io/probability_lecture/
+
 ## Project Structure
 
 - `index.html`: deck markup and script/style includes

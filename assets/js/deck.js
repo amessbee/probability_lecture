@@ -1,10 +1,91 @@
-const slides = Array.from(
+const allSlides = Array.from(
   document.querySelectorAll(".reveal .slides > section"),
 );
+let slides = allSlides.slice();
 const progressBar = document.getElementById("deckProgressBar");
 const slideStorageKey = "probability_lecture_current_slide";
 const themeStorageKey = "probability_lecture_theme";
+const deckModeStorageKey = "probability_lecture_deck_mode";
 let currentSlide = 0;
+let deckMode = "short";
+
+function isLongOnlySlide(slide) {
+  return slide.classList.contains("long-only");
+}
+
+function visibleSlidesForMode(mode) {
+  if (mode === "long") {
+    return allSlides.slice();
+  }
+  return allSlides.filter((slide) => !isLongOnlySlide(slide));
+}
+
+function syncDeckModeButton() {
+  const btn = document.getElementById("toggleDeckMode");
+  if (!btn) {
+    return;
+  }
+  btn.textContent = deckMode === "long" ? "LONG" : "SHORT";
+  btn.title =
+    deckMode === "long" ? "Switch to short lecture" : "Switch to long lecture";
+  btn.setAttribute("aria-pressed", deckMode === "long" ? "true" : "false");
+}
+
+function applyDeckModeVisibility() {
+  const visible = new Set(slides);
+  allSlides.forEach((slide) => {
+    slide.classList.toggle("mode-hidden", !visible.has(slide));
+    if (!visible.has(slide)) {
+      slide.classList.remove("active");
+    }
+  });
+  document.body.setAttribute("data-deck-mode", deckMode);
+}
+
+function setDeckMode(mode, persist = true, anchorSlideId, render = true) {
+  const nextMode = mode === "long" ? "long" : "short";
+  const currentId =
+    anchorSlideId || slides[currentSlide]?.id || allSlides[0]?.id;
+  deckMode = nextMode;
+  slides = visibleSlidesForMode(deckMode);
+  applyDeckModeVisibility();
+
+  let nextIndex = slides.findIndex((slide) => slide.id === currentId);
+  if (nextIndex < 0) {
+    nextIndex = Math.min(currentSlide, Math.max(0, slides.length - 1));
+  }
+  currentSlide = Math.max(0, nextIndex);
+  syncDeckModeButton();
+  if (render) {
+    showSlide(currentSlide);
+  }
+
+  if (!persist) {
+    return;
+  }
+  try {
+    localStorage.setItem(deckModeStorageKey, deckMode);
+  } catch (_err) {
+    // Ignore storage failures.
+  }
+}
+
+function toggleDeckMode() {
+  setDeckMode(deckMode === "short" ? "long" : "short");
+}
+
+function restoreDeckModePreference() {
+  let mode = "short";
+  try {
+    const saved = localStorage.getItem(deckModeStorageKey);
+    if (saved === "short" || saved === "long") {
+      mode = saved;
+    }
+  } catch (_err) {
+    // Ignore storage failures and keep default.
+  }
+  setDeckMode(mode, false, undefined, false);
+}
 
 function fragmentsFor(i) {
   return Array.from(slides[i].querySelectorAll(".fragment"));
@@ -46,9 +127,16 @@ function onSlideChanged() {
 
 function showSlide(index) {
   currentSlide = Math.max(0, Math.min(slides.length - 1, index));
+  const visible = new Set(slides);
+  allSlides.forEach((slide) => {
+    if (!visible.has(slide)) {
+      slide.classList.remove("active");
+    }
+  });
   slides.forEach((slide, i) => {
-    slide.classList.toggle("active", i === currentSlide);
-    if (i !== currentSlide) {
+    const isActive = i === currentSlide;
+    slide.classList.toggle("active", isActive);
+    if (!isActive) {
       resetFragments(i);
     }
   });

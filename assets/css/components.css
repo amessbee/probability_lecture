@@ -696,6 +696,15 @@
         font-weight: 700;
       }
 
+      .deck-nav.mode-toggle {
+        min-width: 74px;
+        letter-spacing: 0.03em;
+      }
+
+      .mode-hidden {
+        display: none !important;
+      }
+
       .deck-progress {
         position: fixed;
         left: 0;
