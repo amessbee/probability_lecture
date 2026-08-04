@@ -87,12 +87,12 @@ body {
 }
 
 h1 {
-  margin: 0.3rem 0 0;
+  margin: 0.13rem 0 0;
   font-size: clamp(2rem, 4vw, 3.2rem);
 }
 
 .mh-subtitle {
-  margin: 0.55rem auto;
+  margin: 0.15rem auto;
   max-width: 66ch;
   color: var(--mh-muted);
 }
