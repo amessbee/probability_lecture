@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monty Hall Game Lab</title>
+    <link rel="stylesheet" href="assets/css/themes.css" />
+    <link rel="stylesheet" href="assets/css/montyhall.css" />
+  </head>
+  <body>
+    <div class="mh-bg-orb mh-bg-orb-a" aria-hidden="true"></div>
+    <div class="mh-bg-orb mh-bg-orb-b" aria-hidden="true"></div>
+    <div class="mh-shell">
+      <header class="mh-header">
+        <p class="mh-kicker">Interactive Probability Lab</p>
+        <h1>Monty Hall Game</h1>
+        <p class="mh-subtitle">
+          Play solo or head-to-head and watch whether staying or switching wins.
+        </p>
+      </header>
+
+      <main class="mh-main">
+        <section
+          class="mh-card mh-setup"
+          id="setupCard"
+          aria-labelledby="setupHeading"
+        >
+          <h2 id="setupHeading">Start Session</h2>
+          <p class="mh-help">Set player names and choose a mode.</p>
+
+          <div class="mh-grid-2">
+            <label class="mh-label" for="playerOneInput">
+              Player 1 name
+              <input
+                id="playerOneInput"
+                type="text"
+                maxlength="24"
+                value="player1"
+              />
+            </label>
+            <label class="mh-label" for="playerTwoInput">
+              Player 2 name
+              <input
+                id="playerTwoInput"
+                type="text"
+                maxlength="24"
+                value="player2"
+              />
+            </label>
+          </div>
+
+          <div class="mh-mode-row" role="radiogroup" aria-label="Game mode">
+            <button
+              class="mh-chip active"
+              id="singleModeBtn"
+              data-mode="single"
+              aria-pressed="true"
+            >
+              Single player
+            </button>
+            <button
+              class="mh-chip"
+              id="twoModeBtn"
+              data-mode="two"
+              aria-pressed="false"
+            >
+              Two player
+            </button>
+          </div>
+
+          <button class="mh-primary" id="startSessionBtn">Start session</button>
+        </section>
+
+        <section
+          class="mh-card mh-game hidden"
+          id="gameCard"
+          aria-live="polite"
+        >
+          <div class="mh-top-row">
+            <div>
+              <h2 id="modeTitle">Single player mode</h2>
+              <p class="mh-help" id="modeHelp">Choose one door to begin.</p>
+            </div>
+            <div class="mh-controls">
+              <button class="mh-ghost" id="newRoundBtn">New round</button>
+              <button class="mh-ghost" id="changeSetupBtn">Change setup</button>
+              <button class="mh-ghost danger" id="resetScoreBtn">
+                Reset score
+              </button>
+            </div>
+          </div>
+
+          <section class="mh-scoreboard" id="scoreboard"></section>
+
+          <div
+            class="mh-doors"
+            id="doors"
+            role="group"
+            aria-label="Three game doors"
+          ></div>
+
+          <div class="mh-decision hidden" id="decisionRow">
+            <p id="decisionPrompt">Host opened a goat door. Stay or switch?</p>
+            <div class="mh-controls">
+              <button class="mh-primary" id="stayBtn">Stay</button>
+              <button class="mh-primary alt" id="switchBtn">Switch</button>
+            </div>
+          </div>
+
+          <p class="mh-status" id="statusText">
+            Pick a door to start this round.
+          </p>
+
+          <!-- <a class="mh-back" href="index.html">Back to lecture deck</a> -->
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/js/montyhall.js"></script>
+  </body>
+</html>
