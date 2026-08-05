@@ -209,6 +209,70 @@
         color: #f8f8f8;
       }
 
+      body[data-theme="spacetime"] {
+        --bg: #060917;
+        --bg2: #02040d;
+        --cyan: #8bd6ff;
+        --blue: #5aa9ff;
+        --mint: #70f0e0;
+        --orange: #ffd27d;
+        --rose: #ff9dc0;
+        --text: #e7f2ff;
+        --muted: #9db3d4;
+        --glass: rgba(180, 210, 255, 0.1);
+        --glass-stroke: rgba(173, 214, 255, 0.3);
+        --title-contrast: #f2f7ff;
+        --note-contrast: #b9ccec;
+        --heads-contrast: #ffe0a3;
+        --fifty-color: #f0f7ff;
+        --rapid-feed-color: #dceeff;
+        --nav-text: #ecf4ff;
+        --title-meta-color: #d5e6ff;
+        background:
+          radial-gradient(circle at 18% 14%, rgba(89, 149, 255, 0.22) 0%, transparent 42%),
+          radial-gradient(circle at 80% 26%, rgba(95, 233, 255, 0.2) 0%, transparent 40%),
+          radial-gradient(circle at 55% 82%, rgba(157, 116, 255, 0.22) 0%, transparent 46%),
+          linear-gradient(155deg, var(--bg2), var(--bg));
+      }
+
+      body[data-theme="spacetime"] .backdrop {
+        opacity: 0.18;
+        background-image:
+          radial-gradient(rgba(209, 229, 255, 0.6) 0.7px, transparent 0.7px),
+          radial-gradient(rgba(155, 204, 255, 0.28) 0.5px, transparent 0.5px);
+        background-size:
+          4px 4px,
+          9px 9px;
+        background-position:
+          0 0,
+          2px 1px;
+      }
+
+      body[data-theme="spacetime"] .aurora {
+        filter: blur(58px);
+        background:
+          radial-gradient(circle at 16% 30%, rgba(100, 160, 255, 0.33), transparent 48%),
+          radial-gradient(circle at 84% 70%, rgba(81, 231, 244, 0.28), transparent 44%),
+          radial-gradient(circle at 48% 52%, rgba(162, 122, 255, 0.26), transparent 52%);
+      }
+
+      body[data-theme="spacetime"] .deck-nav {
+        border-color: rgba(184, 216, 255, 0.4);
+        background: rgba(117, 162, 228, 0.24);
+        color: var(--nav-text);
+      }
+
+      body[data-theme="spacetime"] .theme-option {
+        border-color: rgba(190, 223, 255, 0.36);
+        background: rgba(123, 165, 229, 0.2);
+      }
+
+      body[data-theme="spacetime"] .glass {
+        box-shadow:
+          0 12px 34px rgba(5, 12, 35, 0.38),
+          inset 0 1px 0 rgba(226, 239, 255, 0.16);
+      }
+
       .backdrop {
         position: fixed;
         inset: 0;

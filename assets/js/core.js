@@ -139,19 +139,20 @@ function setStage1Interactivity(enabled) {
   const stage = document.getElementById("doorStage1");
   stage.querySelectorAll(".door-card").forEach((card) => {
     const btn = card.querySelector(".door-hit");
-    const idx = Number(card.dataset.idx);
     btn.disabled = !enabled;
     btn.onclick = enabled
       ? () => {
-          stage
-            .querySelectorAll(".door-card")
-            .forEach((c) => c.classList.remove("active"));
+          const cards = Array.from(stage.querySelectorAll(".door-card"));
+          cards.forEach((c) => c.classList.remove("active"));
           card.classList.add("active");
-          state.stage1Picked = idx;
-          state.pickedDoor = idx;
-          state.lastDoorPick = idx;
+
+          // Preserve the audience's visual choice after shuffle.
+          const visualIndex = cards.indexOf(card);
+          state.stage1Picked = visualIndex;
+          state.pickedDoor = visualIndex;
+          state.lastDoorPick = visualIndex;
           document.getElementById("doorPickNote").textContent =
-            `Door ${idx + 1} selected. Audience committed.`;
+            `Door ${visualIndex + 1} selected. Audience committed.`;
         }
       : null;
   });
@@ -266,6 +267,8 @@ function runDoorIntroSequence() {
   const note = document.getElementById("doorPickNote");
 
   state.stage1Picked = null;
+  state.lastDoorPick = null;
+  state.pickedDoor = null;
   state.doorIntroPhase = "revealed_waiting";
   buildDoors("doorStage1", "s1", false);
   setStage1Interactivity(false);
@@ -308,6 +311,16 @@ async function startDoorShuffleSequence() {
 
   if (token !== state.doorIntroToken) {
     return;
+  }
+
+  // Re-map car index to its final visual position after shuffling.
+  const finalCards = Array.from(stage.querySelectorAll(".door-card"));
+  const priorCarIdentity = state.carDoor;
+  const mappedCarPosition = finalCards.findIndex(
+    (card) => Number(card.dataset.idx) === priorCarIdentity,
+  );
+  if (mappedCarPosition >= 0) {
+    state.carDoor = mappedCarPosition;
   }
 
   note.textContent = "Now pick one door.";

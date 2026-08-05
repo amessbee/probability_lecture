@@ -22,6 +22,7 @@ const switchBtn = document.getElementById("switchBtn");
 const newRoundBtn = document.getElementById("newRoundBtn");
 const changeSetupBtn = document.getElementById("changeSetupBtn");
 const resetScoreBtn = document.getElementById("resetScoreBtn");
+const backToLectureLink = document.getElementById("backToLectureLink");
 
 const state = {
   mode: "single",
@@ -511,6 +512,31 @@ function showSetup() {
   state.phase = "setup";
 }
 
+function configureBackLink() {
+  if (!backToLectureLink) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const slideId = params.get("slideId");
+  const slide = Number(params.get("slide"));
+  const deckMode = params.get("deckMode");
+  const targetParams = new URLSearchParams();
+
+  if (slideId) {
+    targetParams.set("slideId", slideId);
+  }
+  if (Number.isInteger(slide) && slide >= 0) {
+    targetParams.set("slide", String(slide));
+  }
+  if (deckMode === "short" || deckMode === "long") {
+    targetParams.set("deckMode", deckMode);
+  }
+
+  const query = targetParams.toString();
+  backToLectureLink.href = query ? `index.html?${query}` : "index.html";
+}
+
 modeButtons.single.addEventListener("click", () => setMode("single"));
 modeButtons.two.addEventListener("click", () => setMode("two"));
 startSessionBtn.addEventListener("click", startSession);
@@ -521,6 +547,7 @@ stayBtn.addEventListener("click", () => settleSingleRound("stay"));
 switchBtn.addEventListener("click", () => settleSingleRound("switch"));
 
 renderDoors();
+configureBackLink();
 loadSession();
 setMode("single");
 renderScoreboard();
