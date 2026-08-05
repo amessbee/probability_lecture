@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Probability Basics in 2 Minutes</title>
+
+    <link rel="stylesheet" href="assets/css/themes.css" />
+    <link rel="stylesheet" href="assets/css/layout.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <div class="aurora"></div>
+    <div class="atelier-doodles" id="atelierDoodles" aria-hidden="true"></div>
+    <div class="math-doodles" aria-hidden="true">
+      <div class="doodle tr">
+        P(A) + P(A<sup>c</sup>) = 1<br />
+        P(A &cup; B) = P(A) + P(B) - P(A &cap; B)<br />
+        P(A &cap; B) = P(A)P(B|A)
+      </div>
+      <div class="doodle bl">
+        0 &le; P(E) &le; 1<br />
+        P(S) = 1, P(&empty;) = 0<br />
+        P(B|A) = P(A &cap; B)/P(A)
+      </div>
+      <div class="doodle br">
+        If independent:<br />
+        P(A &cap; B) = P(A)P(B)
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        <section id="slide-pb-cover">
+          <div class="full title-hero">
+            <div class="kicker">Mini Deck</div>
+            <h1>Probability Basics in 2 Minutes</h1>
+            <p class="hero-sub title-meta">
+              Core rules + product rule<br />
+              Enough to solve quick problems fast
+            </p>
+          </div>
+        </section>
+
+        <section id="slide-pb-axioms">
+          <div class="kicker">Rule Set 1</div>
+          <h2>Three Ground Rules</h2>
+          <div class="outcomes-card glass">
+            <ul class="outcomes-list">
+              <li class="fragment fade-up">
+                <strong>Bounds:</strong> 0 &le; P(E) &le; 1
+              </li>
+              <li class="fragment fade-up">
+                <strong>Whole sample space:</strong> P(S) = 1
+              </li>
+              <li class="fragment fade-up">
+                <strong>Impossible event:</strong> P(&empty;) = 0
+              </li>
+            </ul>
+          </div>
+          <p class="hero-sub">
+            Interpretation: probabilities are normalized belief over outcomes.
+          </p>
+        </section>
+
+        <section id="slide-pb-product">
+          <div class="kicker">Main Target</div>
+          <h2>Product Rule</h2>
+          <div class="quote fragment fade-up">P(A &cap; B) = P(A)P(B|A)</div>
+          <div class="outcomes-card glass fragment fade-up">
+            <ul class="outcomes-list">
+              <li>
+                Read it as: "Probability of both = first event × conditional
+                second."
+              </li>
+              <li>Independent shortcut: P(A &cap; B) = P(A)P(B)</li>
+            </ul>
+          </div>
+          <p class="hero-sub fragment fade-up">
+            Fast example: two cards without replacement, both aces = 4/52
+            &times; 3/51.
+          </p>
+        </section>
+
+        <section id="slide-pb-close">
+          <div class="kicker">30-Second Recap</div>
+          <h2>What to Remember</h2>
+          <div class="welcome">
+            Bounds, complement, addition, and product rule.
+          </div>
+          <div class="revisit">
+            If two events interact, think conditionally before multiplying.
+          </div>
+          <div class="hero-sub">
+            That is enough foundation for Bayes and Monty Hall.
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="deck-controls">
+      <button
+        class="deck-nav wide"
+        id="toggleFullscreen"
+        aria-label="Toggle full screen"
+        title="Toggle full screen"
+      >
+        ⛶
+      </button>
+      <button
+        class="deck-nav wide"
+        id="toggleThemePanel"
+        aria-label="Theme options"
+        title="Theme options"
+      >
+        🎨
+      </button>
+      <button
+        class="deck-nav wide mode-toggle"
+        id="toggleDeckMode"
+        aria-label="Switch lecture length"
+        title="Switch lecture length"
+        aria-pressed="false"
+      >
+        SHORT
+      </button>
+      <button
+        class="deck-nav wide"
+        id="toggleInvertColors"
+        aria-label="Invert colors"
+        title="Invert colors"
+        aria-pressed="false"
+      >
+        ◐
+      </button>
+      <button
+        class="deck-nav wide"
+        id="toggleDoodles"
+        aria-label="Doodle settings"
+        title="Doodle settings"
+        aria-expanded="false"
+        aria-pressed="true"
+      >
+        🖋
+      </button>
+      <button
+        class="deck-nav wide"
+        id="goIndex"
+        aria-label="Back to main lecture"
+        title="Back to main lecture"
+      >
+        INDEX
+      </button>
+      <button
+        class="deck-nav"
+        id="homeSlide"
+        aria-label="Go to title slide"
+        title="Go to title"
+      >
+        &#8962;
+      </button>
+      <button class="deck-nav" id="prevSlide" aria-label="Previous slide">
+        &#8592;
+      </button>
+      <button class="deck-nav" id="nextSlide" aria-label="Next slide">
+        &#8594;
+      </button>
+    </div>
+    <div class="theme-panel glass" id="themePanel" aria-label="Theme options">
+      <button class="theme-option" data-theme="atelier">
+        Atelier (Default)
+      </button>
+      <button class="theme-option" data-theme="default">Deep Blue</button>
+      <button class="theme-option" data-theme="spacetime">Space/Time</button>
+      <button class="theme-option" data-theme="sunset">Sunset</button>
+      <button class="theme-option" data-theme="dawn">Dawn</button>
+      <button class="theme-option" data-theme="paper">Paper</button>
+      <button class="theme-option" data-theme="math">Math Ink</button>
+    </div>
+    <div
+      class="doodle-panel glass"
+      id="doodlePanel"
+      aria-label="Doodle settings"
+    >
+      <label class="doodle-row" for="doodleEnabledSwitch">
+        <span>Doodles</span>
+        <input type="checkbox" id="doodleEnabledSwitch" checked />
+      </label>
+      <label class="doodle-row" for="doodleLightnessSlider">
+        <span>Lightness</span>
+        <span id="doodleLightnessValue">72%</span>
+      </label>
+      <input
+        type="range"
+        id="doodleLightnessSlider"
+        min="0"
+        max="145"
+        step="5"
+        value="72"
+      />
+      <label class="doodle-row" for="doodleSizeSlider">
+        <span>Size</span>
+        <span id="doodleSizeValue">100%</span>
+      </label>
+      <input
+        type="range"
+        id="doodleSizeSlider"
+        min="20"
+        max="200"
+        step="5"
+        value="100"
+      />
+    </div>
+    <div class="deck-progress"><div id="deckProgressBar"></div></div>
+
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/deck.js"></script>
+    <script src="assets/js/probability-init.js"></script>
+  </body>
+</html>

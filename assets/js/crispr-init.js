@@ -1,32 +1,3 @@
-buildDoors("doorStage1", "s1", false);
-setStage1Interactivity(false);
-resetOpenStage();
-resetFlow();
-resetFive();
-resetSim();
-reset100();
-resetParadox();
-
-document.getElementById("runOpenAnim").addEventListener("click", runOpenStage);
-document
-  .getElementById("resetOpenAnim")
-  .addEventListener("click", resetOpenStage);
-document.getElementById("runFlow").addEventListener("click", runFlow);
-document.getElementById("resetFlow").addEventListener("click", resetFlow);
-document.getElementById("runFive").addEventListener("click", runFive);
-document.getElementById("resetFive").addEventListener("click", resetFive);
-document.getElementById("run1k").addEventListener("click", () => runSim(1000));
-document.getElementById("run5k").addEventListener("click", () => runSim(5000));
-document
-  .getElementById("run10k")
-  .addEventListener("click", () => runSim(10000));
-document
-  .getElementById("run50k")
-  .addEventListener("click", () => runSim(50000));
-document.getElementById("resetSim").addEventListener("click", resetSim);
-document.getElementById("run100").addEventListener("click", run100);
-document.getElementById("reset100").addEventListener("click", reset100);
-
 document.getElementById("nextSlide").addEventListener("click", next);
 document.getElementById("prevSlide").addEventListener("click", prev);
 document
@@ -36,34 +7,11 @@ document
   .getElementById("toggleThemePanel")
   .addEventListener("click", () => toggleThemePanel());
 document
-  .getElementById("toggleDeckMode")
-  .addEventListener("click", toggleDeckMode);
-document
   .getElementById("toggleInvertColors")
   .addEventListener("click", toggleInvertedColors);
 document
   .getElementById("toggleDoodles")
   .addEventListener("click", () => toggleDoodlesPanel());
-document.getElementById("goMontyHall").addEventListener("click", () => {
-  const activeSlide = slides[currentSlide];
-  const params = new URLSearchParams();
-  if (activeSlide?.id) {
-    params.set("slideId", activeSlide.id);
-  }
-  params.set("slide", String(currentSlide));
-  params.set("deckMode", deckMode);
-  window.location.href = `montyhall.html?${params.toString()}`;
-});
-document.getElementById("goProbabilityBasics").addEventListener("click", () => {
-  const activeSlide = slides[currentSlide];
-  const params = new URLSearchParams();
-  if (activeSlide?.id) {
-    params.set("fromSlideId", activeSlide.id);
-  }
-  params.set("fromSlide", String(currentSlide));
-  params.set("fromDeckMode", deckMode);
-  window.location.href = `probability-basics.html?${params.toString()}`;
-});
 document
   .getElementById("doodleEnabledSwitch")
   .addEventListener("change", (event) => {
@@ -143,12 +91,6 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-document.getElementById("slide-doors").addEventListener("click", () => {
-  if (state.doorIntroPhase === "revealed_waiting") {
-    startDoorShuffleSequence();
-  }
-});
-
 let initialSlide = 0;
 restoreDeckModePreference();
 try {
@@ -168,29 +110,6 @@ try {
   }
 } catch (_err) {
   // Ignore storage failures and keep default theme.
-}
-
-const returnParams = new URLSearchParams(window.location.search);
-const requestedMode = returnParams.get("deckMode");
-if (requestedMode === "short" || requestedMode === "long") {
-  setDeckMode(requestedMode, false, undefined, false);
-}
-
-const requestedSlideId = returnParams.get("slideId");
-if (requestedSlideId) {
-  const requestedById = slides.findIndex(
-    (slide) => slide.id === requestedSlideId,
-  );
-  if (requestedById >= 0) {
-    initialSlide = requestedById;
-  }
-}
-
-if (!requestedSlideId) {
-  const requestedSlide = Number(returnParams.get("slide"));
-  if (Number.isInteger(requestedSlide)) {
-    initialSlide = Math.max(0, Math.min(slides.length - 1, requestedSlide));
-  }
 }
 
 applyTheme(initialTheme);

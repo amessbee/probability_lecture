@@ -299,14 +299,14 @@ async function startDoorShuffleSequence() {
     card.classList.remove("open", "show-goat", "show-car", "active");
   });
 
-  await sleep(300);
+  await sleep(150);
   note.textContent = "Shuffling...";
   for (let i = 0; i < 10; i += 1) {
     if (token !== state.doorIntroToken) {
       return;
     }
-    await swapTwoDoorCardsOnce(stage, 760);
-    await sleep(120);
+    await swapTwoDoorCardsOnce(stage, 380);
+    await sleep(60);
   }
 
   if (token !== state.doorIntroToken) {
